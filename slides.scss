@@ -1,0 +1,214 @@
+/*-- scss:defaults --*/
+
+// Color palette — Cleveland Clinic teal/medical with warm accents
+// Primary: deep clinical teal. Secondary: warm slate. Accent: confident green.
+$primary:       #006B5E;   // deep teal — dominant
+$secondary:     #34495E;   // slate — section headers
+$accent:        #27AE60;   // confident green — status badges, callouts
+$warm:          #E67E22;   // amber — warnings, aspirational badges
+$danger:        #C0392B;   // red — gaps, alerts
+$body-color:    #2C3E50;   // dark slate — body text
+$body-bg:       #FAFAFA;   // warm off-white
+$link-color:    $primary;
+
+// Fonts
+$font-family-sans-serif: "Source Sans Pro", "Open Sans", sans-serif;
+$font-family-monospace:  "Source Code Pro", "Fira Code", monospace;
+$presentation-heading-color: $secondary;
+
+/*-- scss:mixins --*/
+
+
+/*-- scss:rules --*/
+
+// --- Slide number positioning ---
+.slide-number,
+.reveal.has-logo .slide-number {
+  bottom: 10px !important;
+  right: 100px !important;
+  top: unset !important;
+  color: $body-color !important;
+}
+
+// --- Title slide ---
+#title-slide,
+#title-slide h1.title {
+  color: white;
+}
+
+#title-slide .subtitle {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+// --- Links ---
+.reveal a {
+  text-decoration: underline;
+}
+
+// --- Status badges ---
+// Usage: [Adopted]{.badge-adopted}  [In use]{.badge-inuse}
+//        [In development]{.badge-dev}  [Aspirational]{.badge-aspire}
+.badge-adopted,
+.badge-inuse,
+.badge-dev,
+.badge-aspire {
+  display: inline-block;
+  padding: 0.15em 0.6em;
+  border-radius: 4px;
+  font-size: 0.6em;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  vertical-align: middle;
+  margin-left: 0.4em;
+}
+
+.badge-adopted {
+  background-color: $accent;
+  color: white;
+}
+
+.badge-inuse {
+  background-color: $primary;
+  color: white;
+}
+
+.badge-dev {
+  background-color: $warm;
+  color: white;
+}
+
+.badge-aspire {
+  background-color: #BDC3C7;
+  color: $secondary;
+}
+
+// --- Legacy .red class (keep for compatibility) ---
+.red {
+  color: $danger;
+}
+
+// --- Emphasis text ---
+.muted {
+  color: #7F8C8D;
+  font-size: 0.85em;
+}
+
+.big-number {
+  font-size: 3em;
+  font-weight: 700;
+  color: $primary;
+  line-height: 1.1;
+}
+
+.big-number-label {
+  font-size: 0.9em;
+  color: #7F8C8D;
+  margin-top: -0.3em;
+}
+
+// --- Stat callout cards ---
+.stat-card {
+  text-align: center;
+  padding: 0.8em;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border-left: 4px solid $primary;
+}
+
+// --- Section header slides ---
+.reveal section[data-background-color="#34495e"] h1 {
+  color: white;
+  font-weight: 700;
+}
+
+// --- Blockquotes ---
+.reveal blockquote {
+  border-left: 4px solid $primary;
+  background: rgba(0, 107, 94, 0.05);
+  padding: 0.8em 1.2em;
+  font-style: normal;
+  font-size: 1.1em;
+}
+
+// --- Tables ---
+.reveal table {
+  font-size: 0.85em;
+}
+
+.reveal table thead th {
+  background-color: $secondary;
+  color: white;
+  font-weight: 600;
+  padding: 0.5em 0.8em;
+}
+
+.reveal table tbody td {
+  padding: 0.4em 0.8em;
+  border-bottom: 1px solid #E8E8E8;
+}
+
+.reveal table tbody tr:nth-child(even) {
+  background-color: rgba(0, 107, 94, 0.03);
+}
+
+// --- Code ---
+.reveal code {
+  background-color: #F1F3F5;
+  color: $primary;
+  padding: 0.1em 0.3em;
+  border-radius: 3px;
+  font-size: 0.9em;
+}
+
+.reveal div.sourceCode {
+  border: 1px solid #DDD !important;
+  border-radius: 6px !important;
+  box-shadow: none !important;
+}
+
+.reveal pre {
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.reveal pre code {
+  background-color: #F8F9FA;
+  font-size: 0.85em;
+}
+
+// --- Callout boxes ---
+.reveal .callout {
+  border-radius: 6px;
+  margin: 0.8em 0;
+}
+
+// --- Logo ---
+.reveal .slide-logo {
+  height: 1.75em !important;
+  width: 1.75em !important;
+  max-width: unset !important;
+  max-height: unset !important;
+}
+
+// --- Scrollable containers ---
+.max-lines {
+  max-height: 400px;
+  overflow: scroll;
+}
+
+.scrolling {
+  overflow: scroll;
+  height: 400px;
+}
+
+// --- Lists ---
+.reveal ol {
+  margin: 0 0 0 1.5em;
+}
+
+.reveal ul li,
+.reveal ol li {
+  margin-bottom: 0.3em;
+}
