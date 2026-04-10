@@ -15,3 +15,6 @@ renv/
 
 # OS
 .DS_Store
+
+# Ignore legacy folder
+the_bestest_talk/
