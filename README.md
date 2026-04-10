@@ -1,5 +1,10 @@
 # Care and Feeding of Your Biostats Team
 
+[![Render and Deploy](https://github.com/ehrlinger/CareFeedingBiostats/actions/workflows/deploy.yml/badge.svg)](https://github.com/ehrlinger/CareFeedingBiostats/actions/workflows/deploy.yml)
+[![License: CC BY 4.0](https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by/4.0/)
+[![Made with Quarto](https://img.shields.io/badge/Made%20with-Quarto-blue)](https://quarto.org)
+[![R/Medicine 2026](https://img.shields.io/badge/R%2FMedicine-2026-276DC3)](https://rconsortium.github.io/RMedicine/)
+
 **Scaling Best Practices in a Large Hybrid SAS/R Team**
 
 A 20-minute recorded talk for [R/Medicine 2026](https://rconsortium.github.io/RMedicine/).

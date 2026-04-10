@@ -25,7 +25,7 @@ format:
     show-slide-number: all
     highlight-style: rstudio_default-light.theme
     logo: "img/rmed.png"
-    footer: "[Slides](https://github.com/ehrlinger/CareFeeding){target='_blank'}"
+    footer: "[Slides](https://ehrlinger.github.io/CareFeedingBiostats){target='_blank'}"
     include-after-body: "img/clean_title_page.html"
 include-in-header:
   text: |
