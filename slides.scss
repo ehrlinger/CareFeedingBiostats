@@ -123,6 +123,12 @@ $presentation-heading-color: $secondary;
   font-weight: 700;
 }
 
+// --- Slide title spacing ---
+// Standardize the gap between slide title (h2) and first content element
+.reveal .slides section h2 {
+  margin-bottom: 0.4em;
+}
+
 // --- Blockquotes ---
 .reveal blockquote {
   border-left: 4px solid $primary;

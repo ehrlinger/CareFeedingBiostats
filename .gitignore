@@ -18,3 +18,6 @@ renv/
 
 # Ignore legacy folder
 the_bestest_talk/
+
+**/*.quarto_ipynb
+.positai

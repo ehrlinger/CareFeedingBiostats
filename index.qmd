@@ -1,0 +1,830 @@
+---
+title: "Care and Feeding of Your Biostats Team"
+subtitle: "Scaling Best Practices in a Large Hybrid SAS/R Team"
+author:
+  - name: "John Ehrlinger, PhD"
+    affiliation:
+      - "Cleveland Clinic, <br>Heart, Vascular & Thoracic Institute, <br>Cardiovascular Outcome Registries and Research"
+date: last-modified
+date-format: "MMMM D, YYYY"
+format:
+  revealjs:
+    theme:
+      - default
+      - slides.scss
+    title-slide-attributes:
+      data-background-image: "img/rmed_background.png"
+      data-background-size: cover
+      data-background-opacity: "50"
+    width: 1400
+    height: 788
+    margin: 0.04
+    fontsize: 32px
+    html-math-method: mathjax
+    slide-number: c/t
+    show-slide-number: all
+    highlight-style: rstudio_default-light.theme
+    logo: "img/rmed.png"
+    footer: "[Slides](https://ehrlinger.github.io/CareFeedingBiostats){target='_blank'}"
+    include-after-body: "img/clean_title_page.html"
+    fig-align: center
+    code-line-numbers: false
+include-in-header:
+  text: |
+    <link rel="shortcut icon" href="img/rmed.ico"/>
+embed-resources: true
+knitr:
+  opts_chunk:
+    collapse: true
+    echo: false
+    message: true
+    warning: true
+    error: true
+    comment: ""
+    R.options:
+      digits: 3
+editor_options:
+  chunk_output_type: console
+editor: source
+---
+
+```{r setup}
+#| include: false
+library(ggplot2)
+# library(hvtiPlotR)
+# library(hvtiRutilities)
+```
+
+## Cardiovascular Outcome Registries and Research (CORR)
+
+::::: columns
+::: {.column width="50%"}
+### 1997 CORR
+
+-   SAS shop
+-   One analyst owns a job - want interchangeable
+-   Naming conventions and folder structure
+-   A social contract — loosely enforced
+:::
+
+::: {.column width="50%"}
+### Today
+
+-   R and SAS hybrid
+-   Team grows to 19 (and more)
+-   Conventions extend to R
+-   [Discipline doesn't scale under production pressure]{style="color: #C0392B; font-weight: bold;"}
+:::
+:::::
+
+. . .
+
+R package `randomForestSRC` was developed in CORR (2007).
+
+R package `ggRandomForests` was developed for `ggplot2` graphics (2012).
+
+**Nobody planned a hybrid shop. The science pulled R in.**
+
+::: notes
+I work in Cardiovascular Outcomes Registries and Research. This is where CORR came from. 1997, our director arrives and CORR is a pure SAS, small team, social contract held by discipline. R entered not by policy but because the science required it. randomForestSRC was developed in CORR — I wrote ggRandomForests for visualizations. The path from a SAS shop to a hybrid SAS/R shop happened organically, driven by methods, not a mandate.
+:::
+
+## CORR Production Scale
+
+```{=html}
+<svg viewBox="0 0 1280 560" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;">
+  <defs>
+    <marker id="arrhd" markerWidth="9" markerHeight="9" refX="7" refY="3.5" orient="auto">
+      <path d="M0,0 L0,7 L9,3.5 z" fill="#aaa"/>
+    </marker>
+  </defs>
+
+  <!-- 19 CORR staff (circle, cx=145, cy=265, r=78) -->
+  <circle cx="145" cy="265" r="78" fill="#34495e"/>
+  <text x="145" y="256" text-anchor="middle" fill="#fff" font-size="50" font-weight="700" font-family="sans-serif">19</text>
+  <text x="145" y="286" text-anchor="middle" fill="#fff" font-size="21" font-family="sans-serif" opacity="0.9">CORR staff</text>
+
+  <!-- Fork: staff right (223,265) → spine at x=238 -->
+  <line x1="223" y1="265" x2="238" y2="265" stroke="#bbb" stroke-width="2.5"/>
+  <!-- Vertical fork spine: y=90 to y=440 -->
+  <line x1="238" y1="90" x2="238" y2="440" stroke="#bbb" stroke-width="2.5"/>
+  <!-- Upper arm → ~150 ellipse left edge (cx=558 - rx=155 = 403) -->
+  <line x1="238" y1="90"  x2="401" y2="90"  stroke="#bbb" stroke-width="2.5" marker-end="url(#arrhd)"/>
+  <!-- Middle arm → ~100+ ellipse left edge (cx=558 - rx=148 = 410) -->
+  <line x1="238" y1="265" x2="408" y2="265" stroke="#bbb" stroke-width="2.5" marker-end="url(#arrhd)"/>
+  <!-- Lower arm → ~50 ellipse left edge (cx=558 - rx=152 = 406) -->
+  <line x1="238" y1="440" x2="404" y2="440" stroke="#bbb" stroke-width="2.5" marker-end="url(#arrhd)"/>
+
+  <!-- ~150 data requests (ellipse cx=558, cy=90, rx=155, ry=68) -->
+  <ellipse cx="558" cy="90" rx="155" ry="68" fill="#1a5276"/>
+  <text x="558" y="80" text-anchor="middle" fill="#fff" font-size="44" font-weight="700" font-family="sans-serif">~150</text>
+  <text x="558" y="110" text-anchor="middle" fill="#fff" font-size="20" font-family="sans-serif" opacity="0.9">data requests / year</text>
+
+  <!-- ~100+ presentations (ellipse cx=558, cy=265, rx=148, ry=62) -->
+  <ellipse cx="558" cy="265" rx="148" ry="62" fill="#6c3483"/>
+  <text x="558" y="255" text-anchor="middle" fill="#fff" font-size="40" font-weight="700" font-family="sans-serif">~100+</text>
+  <text x="558" y="283" text-anchor="middle" fill="#fff" font-size="19" font-family="sans-serif" opacity="0.9">presentations / year</text>
+
+  <!-- ~50 manuscripts (ellipse cx=558, cy=440, rx=152, ry=66) -->
+  <ellipse cx="558" cy="440" rx="152" ry="66" fill="#006B5E"/>
+  <text x="558" y="430" text-anchor="middle" fill="#fff" font-size="44" font-weight="700" font-family="sans-serif">~50</text>
+  <text x="558" y="460" text-anchor="middle" fill="#fff" font-size="20" font-family="sans-serif" opacity="0.9">manuscripts / year</text>
+
+  <!-- Merge: upper right (713,90) → spine x=862 -->
+  <line x1="713" y1="90"  x2="862" y2="90"  stroke="#bbb" stroke-width="2.5"/>
+  <!-- Middle right (706,265) → spine x=862 -->
+  <line x1="706" y1="265" x2="862" y2="265" stroke="#bbb" stroke-width="2.5"/>
+  <!-- Lower right (710,440) → spine x=862 -->
+  <line x1="710" y1="440" x2="862" y2="440" stroke="#bbb" stroke-width="2.5"/>
+  <!-- Vertical merge spine: y=90 to y=440 -->
+  <line x1="862" y1="90"  x2="862" y2="440" stroke="#bbb" stroke-width="2.5"/>
+  <!-- Merge → 1100+ left edge (958,265) -->
+  <line x1="862" y1="265" x2="956" y2="265" stroke="#bbb" stroke-width="2.5" marker-end="url(#arrhd)"/>
+
+  <!-- 1,100+ HVTI publications (circle cx=1090, cy=265, r=126) -->
+  <circle cx="1090" cy="265" r="126" fill="#117a65"/>
+  <text x="1090" y="251" text-anchor="middle" fill="#fff" font-size="44" font-weight="700" font-family="sans-serif">1,100+</text>
+  <text x="1090" y="279" text-anchor="middle" fill="#fff" font-size="21" font-family="sans-serif" opacity="0.9">HVTI publications</text>
+  <text x="1090" y="303" text-anchor="middle" fill="#fff" font-size="21" font-family="sans-serif" opacity="0.9">/ year</text>
+</svg>
+```
+
+::: notes
+This talk is concerned with the scale that a social contract has to support. 19 staff driving 150 data requests, 100+ presentations, and 50 manuscripts a year — all feeding 1,100+ HVTI publications. Every inefficiency in the pipeline multiplies across all of that. This is what "operating at scale" means here.
+:::
+
+## CORR Assembly Line
+
+```{=html}
+<svg viewBox="0 0 1300 490" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;">
+  <defs>
+    <marker id="arrowhead" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#888"/>
+    </marker>
+  </defs>
+
+  <!-- EHR -->
+  <ellipse cx="115" cy="152" rx="88" ry="50" fill="#2c3e50"/>
+  <text x="115" y="146" text-anchor="middle" fill="#fff" font-size="20" font-family="sans-serif" font-weight="600">EHR /</text>
+  <text x="115" y="170" text-anchor="middle" fill="#fff" font-size="20" font-family="sans-serif" font-weight="600">Registry</text>
+  <line x1="206" y1="152" x2="258" y2="152" stroke="#888" stroke-width="2" marker-end="url(#arrowhead)"/>
+
+  <!-- DWH -->
+  <ellipse cx="350" cy="152" rx="88" ry="50" fill="#006B5E"/>
+  <text x="350" y="146" text-anchor="middle" fill="#fff" font-size="20" font-family="sans-serif" font-weight="600">Data</text>
+  <text x="350" y="170" text-anchor="middle" fill="#fff" font-size="20" font-family="sans-serif" font-weight="600">Warehouse</text>
+  <line x1="441" y1="152" x2="493" y2="152" stroke="#888" stroke-width="2" marker-end="url(#arrowhead)"/>
+
+  <!-- Analysis Dataset -->
+  <ellipse cx="585" cy="152" rx="88" ry="50" fill="#006B5E"/>
+  <text x="585" y="146" text-anchor="middle" fill="#fff" font-size="20" font-family="sans-serif" font-weight="600">Analysis</text>
+  <text x="585" y="170" text-anchor="middle" fill="#fff" font-size="20" font-family="sans-serif" font-weight="600">Dataset</text>
+  <line x1="676" y1="152" x2="728" y2="152" stroke="#888" stroke-width="2" marker-end="url(#arrowhead)"/>
+
+  <!-- Analysis Report (doc shape) -->
+  <rect x="740" y="112" width="152" height="82" rx="5" fill="#117a65"/>
+  <polygon points="872,112 896,112 896,136 872,136" fill="#0e6655"/>
+  <polygon points="872,112 896,136" fill="#1a9e88"/>
+  <text x="816" y="157" text-anchor="middle" fill="#fff" font-size="19" font-family="sans-serif" font-weight="600">Analysis Report</text>
+  <rect x="733" y="105" width="169" height="96" rx="7" fill="none" stroke="#f39c12" stroke-width="3" stroke-dasharray="7,3"/>
+  <line x1="902" y1="152" x2="954" y2="152" stroke="#888" stroke-width="2" marker-end="url(#arrowhead)"/>
+
+  <!-- Manuscript (doc shape) -->
+  <rect x="966" y="112" width="152" height="82" rx="5" fill="#1a5276"/>
+  <polygon points="1098,112 1122,112 1122,136 1098,136" fill="#154360"/>
+  <polygon points="1098,112 1122,136" fill="#2471a3"/>
+  <text x="1044" y="157" text-anchor="middle" fill="#fff" font-size="19" font-family="sans-serif" font-weight="600">Manuscript</text>
+
+  <!-- People connectors — boxes height 70, font 19/17 -->
+  <line x1="350" y1="204" x2="350" y2="242" stroke="#bbb" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <rect x="268" y="242" width="164" height="70" rx="7" fill="#34495e"/>
+  <text x="350" y="270" text-anchor="middle" fill="#fff" font-size="19" font-family="sans-serif">Data Managers</text>
+  <text x="350" y="293" text-anchor="middle" fill="#aaa" font-size="17" font-family="sans-serif">Data Engineers</text>
+
+  <line x1="585" y1="204" x2="585" y2="242" stroke="#bbb" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <rect x="505" y="242" width="160" height="70" rx="7" fill="#34495e"/>
+  <text x="585" y="270" text-anchor="middle" fill="#fff" font-size="19" font-family="sans-serif">Stat</text>
+  <text x="585" y="293" text-anchor="middle" fill="#aaa" font-size="17" font-family="sans-serif">Programmers</text>
+
+  <line x1="816" y1="203" x2="816" y2="242" stroke="#bbb" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <rect x="734" y="242" width="164" height="70" rx="7" fill="#006B5E"/>
+  <text x="816" y="268" text-anchor="middle" fill="#fff" font-size="19" font-family="sans-serif" font-weight="600">Biostatisticians</text>
+  <text x="816" y="293" text-anchor="middle" fill="#aaffee" font-size="17" font-family="sans-serif">&#8592; R/Medicine focus</text>
+
+  <line x1="1044" y1="196" x2="1044" y2="242" stroke="#bbb" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <rect x="962" y="242" width="164" height="70" rx="7" fill="#34495e"/>
+  <text x="1044" y="270" text-anchor="middle" fill="#fff" font-size="19" font-family="sans-serif">Researchers</text>
+  <text x="1044" y="293" text-anchor="middle" fill="#aaa" font-size="17" font-family="sans-serif">PIs / Fellows</text>
+
+  <!-- CORR scope bracket -->
+  <line x1="260" y1="384" x2="1160" y2="384" stroke="#006B5E" stroke-width="2"/>
+  <line x1="260" y1="376" x2="260" y2="392" stroke="#006B5E" stroke-width="2"/>
+  <line x1="1160" y1="376" x2="1160" y2="392" stroke="#006B5E" stroke-width="2"/>
+  <text x="710" y="416" text-anchor="middle" fill="#006B5E" font-size="22" font-family="sans-serif" font-weight="600">CORR scope</text>
+  <text x="710" y="444" text-anchor="middle" fill="#888" font-size="24" font-family="sans-serif">Every inefficiency here multiplies across ~50 manuscripts/year</text>
+</svg>
+```
+
+::: notes
+Walk through the pipeline left to right. Data flows through systems; people transform it at each step. The biostatistician sits in the middle — taking a clean analysis dataset and producing an Analysis Report that researchers can build a manuscript from.
+:::
+
+## The Biostatistician Unit of Production
+
+| Study | Analysis Report | Manuscript |
+|---|---|---|
+| Research questions | Data ingestion | Introduction |
+| Statistical approaches | Model building | Methods |
+| SAS or R jobs | Tables & figures | Results |
+| | | Discussion |
+
+Biostats assemble 1+ analysis **jobs** into a single **Analysis Report**.
+
+Researchers synthesize the Analysis Report into a manuscript.
+
+The **Discussion** section is a collaboration between PIs, researchers, and biostatisticians.
+
+::: notes
+The biostatistician is the unit because the Analysis Report is what moves a study forward. Jobs are the implementation detail — what the audience cares about is the report that comes out the other side. The three-column structure here maps directly onto the talk: data ingestion produces a clean dataset, model building produces estimates, results and figures produce a report. Scaling the team means making every step of that pipeline reliable and handoff-ready.
+:::
+
+## Three steps to production reliability at scale {background-color="#006B5E"}
+
+::: {style="font-size: 1.8em; line-height: 1.8;"}
+1. Data ingestion
+2. Model building
+3. Results and figures
+:::
+
+::: notes
+These are the three places where reproducibility breaks down in practice. Each section follows the same structure: here's what it looked like before, here's the failure mode, here's what we're doing about it. The solutions are at different stages — some in production, some rolling out, some still aspirational.
+:::
+
+# Step 1: Data Ingestion {background-color="#34495e"}
+
+## The Problem: Data file tracking
+
+```{=html}
+<style>
+.tl { position: relative; padding-left: 210px; }
+.tl-line { position: absolute; left: 196px; top: 0; bottom: 0; width: 3px; background: #ddd; }
+.tl-ev { position: relative; margin-bottom: 16px; display: flex; align-items: flex-start; gap: 16px; }
+.tl-d { position: absolute; left: -210px; width: 184px; text-align: right; font-size: 0.72em; color: #888; padding-top: 3px; }
+.tl-dot { width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; position: relative; left: -5px; }
+.tl-f { font-family: 'Courier New', monospace; font-size: 0.72em; padding: 5px 13px; border-radius: 4px; display: inline-block; }
+.tl-n { font-size: 0.72em; margin-top: 4px; }
+.tl-n-warn { color: #c0392b; }
+.tl-n-ok { color: #555; }
+</style>
+
+<div class="tl">
+  <div class="tl-line"></div>
+
+  <!-- Entry 1: green = good/initial -->
+  <div class="tl-ev">
+    <div class="tl-d">Jan 12</div>
+    <div class="tl-dot" style="background:#006B5E;"></div>
+    <div>
+      <div class="tl-f" style="background:#e8f5e9;color:#2e7d32;">cohort.sas7bdat</div>
+      <div class="tl-n tl-n-ok">Initial extract from Data Warehouse</div>
+    </div>
+  </div>
+
+  <!-- Entry 2: orange = warning -->
+  <div class="tl-ev">
+    <div class="tl-d">Feb 3, 2:22 PM</div>
+    <div class="tl-dot" style="background:#e67e22;"></div>
+    <div>
+      <div class="tl-f" style="background:#fff3e0;color:#e65100;">cohort_final.sas7bdat</div>
+      <div class="tl-n tl-n-warn">Exclusions applied &mdash; but which ones?</div>
+    </div>
+  </div>
+
+  <!-- Entry 3: red = problem -->
+  <div class="tl-ev">
+    <div class="tl-d">Feb 3, 4:47 PM</div>
+    <div class="tl-dot" style="background:#c0392b;"></div>
+    <div>
+      <div class="tl-f" style="background:#ffebee;color:#b71c1c;">cohort_final2.sas7bdat</div>
+      <div class="tl-n tl-n-warn">Researcher comments &mdash; additional exclusion added</div>
+    </div>
+  </div>
+
+  <!-- Entry 4: red = problem -->
+  <div class="tl-ev">
+    <div class="tl-d">Mar 15</div>
+    <div class="tl-dot" style="background:#c0392b;"></div>
+    <div>
+      <div class="tl-f" style="background:#ffebee;color:#b71c1c;font-weight:700;">cohort_final_USE_THIS.sas7bdat</div>
+      <div class="tl-n tl-n-warn">PI changed date range &mdash; modified date reset on server sync</div>
+    </div>
+  </div>
+
+  <!-- Entry 5: grey = unknown/today -->
+  <div class="tl-ev">
+    <div class="tl-d">Apr 2 &mdash; today</div>
+    <div class="tl-dot" style="background:#7f8c8d;"></div>
+    <div>
+      <div class="tl-f" style="background:#f5f5f5;color:#555;">cohort_final_USE_THIS_v2.sas7bdat</div>
+      <div class="tl-n tl-n-warn">What changed? Nobody remembers.</div>
+    </div>
+  </div>
+
+</div>
+```
+
+. . .
+
+::: {style="font-size: 1.4em; margin-top: 0.5em;"}
+*Is this the right data? Has it changed?*
+:::
+
+::: notes
+The folder structure isn't the problem — it works. Dataset filenaming MIGHT work. The problem is what happens inside datasets/ when an extract gets updated. Naming and modified dates weren't designed for this job.
+:::
+
+## How we're addressing it [Aspirational]{.badge-aspire}
+
+**Layer governance on top of the structure we already have.**
+
+::::: columns
+::: {.column width="50%"}
+### What we have
+
+::: {style="font-size: 1.7em;"}
+```
+study_root/
+  analyses/      ← jobs
+  datasets/      ← *this problem*
+  descriptive/
+  distributions/
+  documents/     ← office docs
+  estimates/     ← cached data
+  graphs/        ← pdf graphics
+```
+:::
+
+File naming convention for datasets: `built.sas7bdat`
+:::
+
+::: {.column width="50%"}
+### What we're adding
+
+Extend the naming convention — then enforce it:
+
+-   Date in the filename; never overwrite
+-   Dataset manifests:
+    -   what data
+    -   what date
+    -   what source
+-   Checksums — detect silent changes
+-   Audit trail: which manifest did this analysis use?
+:::
+:::::
+
+::: notes
+The folder structure is already there and it works. Over the past 25 years, we've created 1400 studies. Jobs in analysis... read datasets, stored models and results in estimates, graphs. This problem resides inside datasets/ — we need a way to know whether the file the analysis ran against is the same file that's there now. Manifests and checksums do that without changing the structure anyone is used to.
+:::
+
+## Manifest + checksum in practice [Aspirational]{.badge-aspire}
+
+:::::: columns
+::: {.column width="55%"}
+**`datasets/built260430.manifest.yml`**
+
+```yaml
+dataset:      built260430.sas7bdat
+source:       Cardiopulse / STS registry v2.1
+pulled_by:    data_manager
+pull_date:    2026-04-30
+sha256:       a3f8c2d1e4b7f093...
+observations: 12847
+variables:    428
+```
+:::
+
+::: {.column width="45%"}
+**Register explicitly — separate from build**
+
+```r
+digest::digest(
+  "datasets/built260430.sas7bdat",
+  algo = "sha256", file = TRUE)
+```
+
+**Verify before analysis**
+
+```r
+stored  <- yaml::read_yaml(
+  "datasets/built260430.manifest.yml")$sha256
+current <- digest::digest(
+  "datasets/built260430.sas7bdat",
+  algo = "sha256", file = TRUE)
+stopifnot(current == stored)
+```
+
+[Filename says *when*. Checksum says *whether*.]{.muted}
+:::
+
+:::::
+
+. . .
+
+Rebuild without re-registering → every downstream job fails.
+**That failure is the feature.**
+
+::: notes
+The checksum is stored at registration — a deliberate step separate from file creation. If the file is rebuilt (extract re-run, data corrected), the old checksum stays in the manifest and jobs will fail until someone consciously re-registers. This makes rebuilds loud by default. The date-stamped filename tells you when the extract was pulled; the checksum tells you whether the file you're reading now is the same one that was registered. Doesn't tell you a new dataset exists — only that the registered one hasn't changed.
+
+We now have the path to do this in R, and need to extend to SAS.
+:::
+
+# Step 2: Model Building {background-color="#34495e"}
+
+## The Problem 1: R and SAS Environments
+
+::::: columns
+::: {.column width="50%"}
+**SAS**
+
+-   SAS version not locked to a study
+-   Central Macro library unversioned
+-   Shared server — environment invisible and untracked
+:::
+
+::: {.column width="50%"}
+**R**
+
+-   R version is not locked to a study
+-   Package versions drift across global updates
+-   Serialized models in `estimates/` **fail to load**
+-   Results don't match — or the job won't run
+:::
+:::::
+
+. . .
+
+::: {style="font-size: 1.4em; margin-top: 0.5em;"}
+*Can you reproduce this analysis six months from now?*
+:::
+
+::: notes
+Neither platform captures the environment. SAS's shared server setup makes it invisible; RStudio helps with Projects, if we use them. R's global package library makes it fragile. The failure modes look different but the root cause is the same: no one pinned the environment to the study.
+:::
+
+## R: `renv` with RStudio projects [In use]{.badge-inuse}
+
+```{=html}
+<style>
+.renv-split { display: grid; grid-template-columns: 1fr 44px 1fr; gap: 0; }
+.renv-bad { background: #fdf2f2; border: 2px solid #e74c3c; border-radius: 8px 0 0 8px; padding: 12px 16px; display: flex; flex-direction: column; }
+.renv-good { background: #f0faf5; border: 2px solid #006B5E; border-radius: 0 8px 8px 0; padding: 12px 16px; display: flex; flex-direction: column; }
+.renv-arr { display: flex; align-items: center; justify-content: center; font-size: 1.8em; color: #aaa; background: #f4f4f4; }
+.renv-head { font-size: 0.78em; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em; padding-bottom: 5px; border-bottom: 2px solid currentColor; }
+.renv-bad .renv-head { color: #c0392b; }
+.renv-good .renv-head { color: #006B5E; }
+.renv-item { font-size: 0.72em; padding: 4px 0; border-bottom: 1px solid rgba(0,0,0,0.07); line-height: 1.4; color: #333; }
+.renv-step { font-size: 0.74em; font-weight: 700; color: #006B5E; margin-top: 7px; margin-bottom: 2px; }
+.renv-step-sub { font-size: 0.62em; color: #888; margin-bottom: 3px; }
+.renv-code { background: #1e1e1e; color: #ccc; border-radius: 4px; padding: 6px 10px; font-family: 'Courier New', monospace; font-size: 0.6em; line-height: 1.7; }
+.renv-lock { background: #006B5E; color: #fff; border-radius: 6px; padding: 5px 10px; text-align: center; font-size: 0.6em; font-weight: 700; line-height: 1.6; margin: 5px auto; display: block; width: fit-content; }
+.renv-ok { font-size: 0.74em; color: #006B5E; font-weight: 600; margin-top: 5px; line-height: 1.5; }
+</style>
+
+<div class="renv-split">
+  <div class="renv-bad">
+    <div class="renv-head">Without renv</div>
+    <div class="renv-item">Packages installed globally &mdash; shared across all projects</div>
+    <div class="renv-item"><code>update.packages()</code> breaks other analyses silently</div>
+    <div class="renv-item">Serialized models in <code>estimates/</code> fail to load 6 months later</div>
+    <div class="renv-item">&ldquo;Works on my machine&rdquo; &mdash; but not yours</div>
+    <div class="renv-item">New analyst hunts down exact versions to reproduce results</div>
+  </div>
+  <div class="renv-arr">&rarr;</div>
+  <div class="renv-good">
+    <div class="renv-head">With renv</div>
+    <div class="renv-step">Day 1 &mdash; any analyst, any machine</div>
+    <div class="renv-step-sub">Isolate the project library and freeze it</div>
+    <div class="renv-code">
+      <span style="color:#569cd6;">renv</span>::init()&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#6a9955;"># isolate library</span><br>
+      <span style="color:#569cd6;">renv</span>::install(<span style="color:#ce9178;">"ehrlinger/hvtiPlotR"</span>)<br>
+      <span style="color:#569cd6;">renv</span>::snapshot()&nbsp;&nbsp;<span style="color:#6a9955;"># freeze versions</span>
+    </div>
+    <div class="renv-lock">renv.lock &mdash; R 4.4.1 &middot; hvtiPlotR 0.3.2 &middot; &hellip;<br><span style="font-weight:400;">commit this; it travels with the project</span></div>
+    <div class="renv-step">6 months later &mdash; different analyst, different machine</div>
+    <div class="renv-step-sub">Open .Rproj, run one command</div>
+    <div class="renv-code">
+      <span style="color:#569cd6;">renv</span>::restore()&nbsp;&nbsp;<span style="color:#6a9955;"># rebuilds library from renv.lock</span>
+    </div>
+    <div class="renv-ok">Same packages. Same results. The job belongs to the team.</div>
+  </div>
+</div>
+```
+
+::: notes
+The key word is "handoff." renv makes the job transferable, not just reproducible on your own machine. The lockfile travels with the project; the library itself gets rebuilt locally on renv::restore(). SAS has no equivalent — that's an open problem we note in the status table.
+:::
+
+## The Problem 2: Code and results live separately
+
+::::: columns
+::: {.column width="50%"}
+**SAS — already solved this**
+
+-   `.lst` pairs code and output in one document
+-   Any analyst opens it and knows what they're looking at
+-   Figures are still external — one remaining gap
+:::
+
+::: {.column width="50%"}
+**R — no equivalent**
+
+-   Code and output in separate files
+-   Figures disconnected from the code that made them
+-   No standard structure across analysts
+:::
+:::::
+
+. . .
+
+::: {style="font-size: 1.4em; margin-top: 0.5em;"}
+*Can a new analyst navigate this job without asking whoever wrote it?*
+:::
+
+::: notes
+SAS solved the code+output problem with .lst. R has no equivalent yet. Note: we still have the underlying copy/paste problem — both SAS jobs and R scripts are copied from a central templates folder, meaning in-flight studies don't get updates. Quarto and packages are the foundation we're building first before tackling that propagation problem.
+:::
+
+## R: Quarto analysis reports [Aspirational]{.badge-aspire}
+
+::::: columns
+::: {.column width="50%"}
+**SAS `.lst` — already the right model**
+
+-   Code and output in one place
+-   Standard enough that any analyst knows where to look
+
+**`report.qmd` replaces `job.sas`**
+
+-   Code chunks paired with output — figures inline
+-   Renders to HTML, PDF, or Word
+:::
+
+::: {.column width="50%"}
+**Standard 4-section template**
+
+```markdown
+# Data
+Ingestion, exclusions, cohort description
+
+# Methods
+Model specification and assumptions
+
+# Explainability
+Diagnostics, sensitivity checks
+
+# Results
+Tables, figures, interpretation
+```
+
+[The structure is the contract.]{.muted}
+:::
+:::::
+
+::: notes
+The pitch to SAS analysts isn't "learn a new tool" — it's "get what you already have in .lst, but with real figures inline and a structure everyone agrees on." The 4-section template is the standard we're building toward: consistent enough to navigate, flexible enough to cover every study type.
+:::
+
+## The Problem 3: Shared function libraries aren't versioned
+
+::::: columns
+::: {.column width="50%"}
+**SAS macro library**
+
+-   Centralized — everyone calls the same macros
+-   Not versioned — no record of which version ran
+-   Changes propagate silently
+:::
+
+::: {.column width="50%"}
+**R functions**
+
+-   Copied from template folder at study creation
+-   Analysts modify their local copy during the study
+-   Improvements don't make it back to the templates
+-   Other studies don't get the fix — manually, at best
+:::
+:::::
+
+. . .
+
+::: {style="font-size: 1.4em; margin-top: 0.5em;"}
+*SAS: did that update break something? R: did anyone else get that fix?*
+:::
+
+::: notes
+Two different failure modes, equally bad. SAS centralizes but can't control when changes land — every study gets every update whether ready or not. R isolates studies from each other but also from improvements — fixes stay local and diverge over time. Neither platform has a deliberate, versioned release process.
+:::
+
+## R: internal packages (SAS macros) [In development]{.badge-dev}
+
+A package **is** a versioned, distributable library.
+
+::::: columns
+::: {.column width="50%"}
+**Functions in a study folder**
+
+- Frozen at copy
+- Fixes don't propagate
+- No version record
+:::
+
+::: {.column width="50%"}
+**Code in a package**
+
+- `renv::update()` → pull fixes deliberately
+- One canonical version
+- Roxygen examples run as tests
+:::
+:::::
+
+. . .
+
+**The hard problems shift — they don't disappear.**
+
+ * Someone must own the package and manage releases.
+ * Studies must evaluate updates before pulling them in.
+
+::: notes
+Packages are better than scattered copies, but the governance problems shift rather than disappear. The version choice becomes explicit and deliberate — which is exactly the point.
+:::
+
+# Step 3: Results and Figures {background-color="#34495e"}
+
+## The Problem: Publication-quality graphics
+
+::::: columns
+::: {.column width="50%"}
+**SAS: `plot.sas`**
+
+- A lot of work in SAS plot
+- Publication quality, true axes
+- Each target required more manual effort:
+  - Manuscript/Poster
+  - PowerPoint light/dark (location)
+  
+:::
+
+::: {.column width="50%"}
+**R: `ggplot2`**
+
+- Now we make `ggplot2` behave
+- Same target problem across output formats
+- Without shared themes and palettes (copy/paste)
+- Without encapsulation, repeated effort
+:::
+:::::
+
+. . .
+
+::: {style="font-size: 1.4em; margin-top: 0.5em;"}
+*Can we capture that effort once — and ensure consistancy?*
+:::
+
+::: notes
+The energy never went away — it just moved platforms. plot.sas was hard-won: we bent SAS graphics into publication quality, but every new output target meant more formatting work. ggplot2 is more flexible but the same two problems persist: the per-target formatting effort, and analysts diverging on themes and color palettes. hvtiPlotR addresses both — capturing the effort in a package and enforcing shared standards through the S3 plot. pattern.
+:::
+
+## R package that uses S3 [In use]{.badge-inuse}
+
+:::::: columns
+::: {.column width="50%"}
+**Package architecture**
+
+- Data transform function → returns an S3 object
+- `print.`, `summary.` for inspection
+- `plot.` method base `ggplot2` figure
+- Decorate using standard `scale_*` and `annotate_*`
+- Theme targets: manuscript, light/dark PowerPoint, posters
+:::
+
+::: {.column width="50%"}
+```{r}
+#| echo: true
+#| eval: false
+# Transform data → S3 object
+obj <- corr_analysis(data)
+
+# Base figure
+fig <- plot(obj)
+
+# Decorate to standard
+fig +
+  scale_x_continuous(...) +
+  annotate("text", ...)
+```
+
+A new analyst builds figures to standard — the examples show how.
+:::
+::::::
+
+::: notes
+The S3 pattern matters because it separates concerns cleanly. The transform function does the statistical work and returns a typed object. The plot method knows how to visualize that object. The analyst's job is decoration — choosing scales, adding annotations — not rebuilding the figure from scratch. The package examples are the documentation AND the quality standard: if your figure matches the example, it's correct. This is how we recover the consistency that plot.sas enforced, without locking people into SAS.
+:::
+
+## Our visualization packages [In development]{.badge-dev}
+
+::::: columns
+::: {.column width="50%"}
+**`ggRandomForests`**
+
+[github.com/ehrlinger/ggRandomForests](https://github.com/ehrlinger/ggRandomForests)
+
+Variable importance, partial depth, minimal depth — all as ggplot2 objects. 
+
+Built around `randomForestSRC` (developed in CORR).
+
+*GitHub-only — removed from CRAN due to dependency drift.*
+:::
+
+::: {.column width="50%"}
+**`hvtiPlotR`**
+
+[github.com/ehrlinger/hvtiPlotR](https://github.com/ehrlinger/hvtiPlotR)
+
+Standardizes survival curves, hazard plots, forest plots — CORR themes. 
+
+Decorator functions bridge `ggplot2` gaps toward `plot.sas` standards.
+
+*These packages evolve with the science — never truly finished.*
+:::
+:::::
+
+::: notes
+ggRandomForests is the proof of concept — born from an internal need, built as a package, and eventually adopted externally. It was removed from CRAN because of dependency drift, not design failure; the pattern still holds. hvtiPlotR applies the same model to CORR-specific plot types. The honest note here is that these packages are always in development — the science keeps moving, and the package has to keep up. That's a governance problem as much as a technical one.
+:::
+
+# Where Things Stand {background-color="#34495e"}
+
+## Honestly
+
+|   | Status |
+|------------------------------------|------------------------------------|
+| Study folder structure | [Adopted]{.badge-adopted} — R and SAS, long-standing standard |
+| Dataset manifests + checksums | [Aspirational]{.badge-aspire} — R and SAS |
+| Platform-agnostic governance checks | [Aspirational]{.badge-aspire} — currently R-only |
+| RStudio Projects + `renv` | [In use]{.badge-inuse} — rolling out now; "easy" win |
+| SAS environment documentation | [Aspirational]{.badge-aspire} — headers + macro versioning |
+| Template programs (R + SAS) | [In development]{.badge-dev} — templates exist, not standard |
+| `ggRandomForests`, `hvtiPlotR` | [In development]{.badge-dev} — in use, developing |
+| `TemporalHazard` | [In development]{.badge-dev} — not yet production |
+
+: {tbl-colwidths="[45,55]"}
+
+::: notes
+This table is the honest answer to "how far along are you?" The folder structure and naming conventions are long-standing and solid — that's the foundation everything else builds on. renv is the easy win we're rolling out now. The packages are in use but actively changing. Everything in Aspirational is real and planned, but not yet standard practice. The point isn't to apologize for the gaps — it's to show that this is a real production environment with real constraints, not a clean academic case study.
+:::
+
+## The framing shift that mattered {background-color="#34495e"}
+
+::: {style="font-size: 1.8em; line-height: 1.5; margin-bottom: 0.8em;"}
+"Reproducibility" → **"Production reliability"**
+:::
+
+*"Any biostatistician can pick up and continue any job."*
+
+Same investment. Different language. Different outcome.
+
+. . .
+
+::: {style="font-size: 1.4em; margin-top: 0.5em;"}
+**Make the right path the easy path.**
+:::
+
+::: notes
+Reproducibility framing failed us — it reads as an academic virtue, something you do for reviewers. Production reliability framing landed differently with the team: it's about whether someone else can pick up your job on a Monday morning when you're out sick. Same tools, same practices — but the reason to adopt them shifted from "good science hygiene" to "your teammates won't be stranded." The second framing wins buy-in. Make the right path the easy path means the standards have to be lower-friction than the workaround, or people will always take the workaround.
+:::
+
+## Resources {background-color="#2c3e50"}
+
+| Package |   |
+|------------------------------------|------------------------------------|
+| `ggRandomForests` | [github.com/ehrlinger/ggRandomForests](https://github.com/ehrlinger/ggRandomForests) |
+| `hvtiPlotR` | [github.com/ehrlinger/hvtiPlotR](https://github.com/ehrlinger/hvtiPlotR) |
+| `hvtiRutilities` | [github.com/ehrlinger/hvtiRutilities](https://github.com/ehrlinger/hvtiRutilities) |
+| `hazard` (SAS) | [github.com/ehrlinger/hazard](https://github.com/ehrlinger/hazard) |
+| `TemporalHazard` | [github.com/ehrlinger/temporal_hazard](https://github.com/ehrlinger/temporal_hazard) |
+
+<br>
+
+These slides: [github.com/ehrlinger/CareFeedingBiostats](https://github.com/ehrlinger/CareFeedingBiostats)
+
+Contact: [ehrlinj@ccf.org](mailto:ehrlinj@ccf.org)
+
+::: {style="margin-top: 1em; padding: 0.5em 1em; background: #27AE60; border-radius: 6px; display: inline-block; color: white; font-weight: 600;"}
+We're hiring a biostatistician — come talk to me!
+:::
+
+::: notes
+Meta-point: these slides are themselves a Quarto revealjs document.
+:::
