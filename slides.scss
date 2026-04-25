@@ -4,9 +4,9 @@
 // Primary: deep clinical teal. Secondary: warm slate. Accent: confident green.
 $primary:       #006B5E;   // deep teal — dominant
 $secondary:     #34495E;   // slate — section headers
-$accent:        #27AE60;   // confident green — status badges, callouts
-$warm:          #E67E22;   // amber — warnings, aspirational badges
-$danger:        #C0392B;   // red — gaps, alerts
+$accent:        #1e8449;   // dark green — status badges (darkened for contrast: ~5:1 on white)
+$warm:          #bf5000;   // dark amber — dev badges (darkened for contrast: ~4.6:1 on white)
+$danger:        #C0392B;   // red — gaps, alerts (legacy; avoid for emphasis text)
 $body-color:    #2C3E50;   // dark slate — body text
 $body-bg:       #FAFAFA;   // warm off-white
 $link-color:    $primary;
@@ -66,21 +66,25 @@ $presentation-heading-color: $secondary;
 .badge-adopted {
   background-color: $accent;
   color: white;
+  &::before { content: "✓ "; }
 }
 
 .badge-inuse {
   background-color: $primary;
   color: white;
+  &::before { content: "● "; }
 }
 
 .badge-dev {
   background-color: $warm;
   color: white;
+  &::before { content: "◐ "; }
 }
 
 .badge-aspire {
   background-color: #BDC3C7;
   color: $secondary;
+  &::before { content: "○ "; }
 }
 
 // --- Legacy .red class (keep for compatibility) ---
