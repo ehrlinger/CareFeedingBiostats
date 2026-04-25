@@ -85,9 +85,9 @@ I work in Cardiovascular Outcomes Registries and Research. CORR was started in 1
 
 SAS/C PROC `hazard` for survival analysis (1986).
 
-R package `randomForestSRC` was developed in CORR (2007).
+R package `randomForestSRC` survival, regression, classification (2007).
 
-R package `ggRandomForests` was developed for `ggplot2` graphics (2012).
+R package `ggRandomForests` RFSRC graphics (2012).
 
 **Nobody planned a hybrid shop. The science pulled R in.**
 
@@ -200,18 +200,16 @@ We are concerned with the scale that this social contract has to support. 19 sta
   <!-- People connectors — boxes height 70 -->
   <line x1="350" y1="204" x2="350" y2="242" stroke="#bbb" stroke-width="1.5" stroke-dasharray="4,3"/>
   <rect x="268" y="242" width="164" height="72" rx="7" fill="#34495e"/>
-  <text x="350" y="270" text-anchor="middle" fill="#fff" font-size="22" font-family="sans-serif">Data Managers</text>
-  <text x="350" y="296" text-anchor="middle" fill="#aaa" font-size="20" font-family="sans-serif">Data Engineers</text>
+  <text x="350" y="283" text-anchor="middle" fill="#fff" font-size="22" font-family="sans-serif">Data Engineers</text>
 
   <line x1="585" y1="204" x2="585" y2="242" stroke="#bbb" stroke-width="1.5" stroke-dasharray="4,3"/>
-  <rect x="505" y="242" width="160" height="72" rx="7" fill="#34495e"/>
-  <text x="585" y="270" text-anchor="middle" fill="#fff" font-size="22" font-family="sans-serif">Stat</text>
-  <text x="585" y="296" text-anchor="middle" fill="#aaa" font-size="20" font-family="sans-serif">Programmers</text>
+  <rect x="480" y="242" width="210" height="72" rx="7" fill="#34495e"/>
+  <text x="585" y="283" text-anchor="middle" fill="#fff" font-size="22" font-family="sans-serif">Stat Programmers</text>
 
   <line x1="816" y1="203" x2="816" y2="242" stroke="#bbb" stroke-width="1.5" stroke-dasharray="4,3"/>
   <rect x="706" y="242" width="220" height="72" rx="7" fill="#006B5E"/>
   <text x="816" y="270" text-anchor="middle" fill="#fff" font-size="22" font-family="sans-serif" font-weight="600">Biostatisticians</text>
-  <text x="816" y="296" text-anchor="middle" fill="#ffffff" font-size="20" font-family="sans-serif" opacity="0.85">&#8592; R/Medicine focus</text>
+  <text x="816" y="296" text-anchor="middle" fill="#ffffff" font-size="20" font-family="sans-serif" opacity="0.85">R/Medicine focus</text>
 
   <!-- Researchers — muted, external to CORR -->
   <line x1="1044" y1="196" x2="1044" y2="242" stroke="#ccc" stroke-width="1.5" stroke-dasharray="4,3"/>
@@ -224,7 +222,7 @@ We are concerned with the scale that this social contract has to support. 19 sta
   <line x1="260" y1="382" x2="260" y2="398" stroke="#006B5E" stroke-width="2"/>
   <line x1="920" y1="382" x2="920" y2="398" stroke="#006B5E" stroke-width="2"/>
   <text x="590" y="422" text-anchor="middle" fill="#006B5E" font-size="24" font-family="sans-serif" font-weight="600">CORR scope</text>
-  <text x="650" y="460" text-anchor="middle" fill="#888" font-size="24" font-family="sans-serif">Every inefficiency here multiplies across ~50 manuscripts/year</text>
+  <text x="650" y="460" text-anchor="middle" fill="#888" font-size="24" font-family="sans-serif">Every inefficiency here multiplies across all deliverables</text>
 </svg>
 ```
 
@@ -266,27 +264,27 @@ That 19 staff are split between disciplines. Data managers/Engineers focus prima
   </tbody>
 </table>
 
-Biostats assemble analysis **jobs** into an **Analysis Report**.
+Biostats run **jobs**, write **Analysis Report**.
 
-Researchers synthesize it into a manuscript
+Researchers write manuscript
 
 ::: notes
 The biostatistician produces the Analysis Report, the product we deliver. Jobs are the implementation detail — what the audience cares about is the report that comes out the other side. The three-column structure here maps directly onto the talk: data ingestion produces a clean dataset, model building produces estimates, results and figures produce a report. Scaling the team means making every step of that pipeline reliable and handoff-ready.
 :::
 
-## Reproducibility at scale — three components {background-color="#006B5E"}
+## Reproducibility at scale — Three Focus Areas {background-color="#006B5E"}
 
 ::: {style="font-size: 1.8em; line-height: 1.8;"}
 1. Data ingestion
 2. Model building
-3. Tables and figures
+3. Figures and tables
 :::
 
 ::: notes
 These are the three places where reproducibility breaks down in practice. Each section follows the same structure: here's what it looked like before, here's the failure mode, here's what we're doing about it. The solutions are at different stages — some in production, some rolling out, some still aspirational.
 :::
 
-# Step 1: Data Ingestion {background-color="#34495e"}
+# Data Ingestion {background-color="#34495e"}
 
 ::: notes
 :::
@@ -463,7 +461,7 @@ We now have the path to do this in R, and need to extend to SAS.
 Rebuild without re-registering → every downstream job fails.
 **That failure is the feature.**
 
-# Step 2: Model Building {background-color="#34495e"}
+# Model Building {background-color="#34495e"}
 
 ::: notes
 :::
@@ -684,7 +682,7 @@ Tables, figures, interpretation
 The pitch to SAS analysts isn't "learn a new tool" — it's "get what you already have in .lst, but with real figures inline and a structure everyone agrees on." The 4-section template is the standard we're building toward: consistent enough to navigate, flexible enough to cover every study type.
 :::
 
-# Step 3: Tables and Figures {background-color="#34495e"}
+# Figures and Tables {background-color="#34495e"}
 
 ::: notes
 :::
@@ -853,7 +851,7 @@ Reproducibility framing failed us — it reads as an academic virtue, something 
       <td style="padding:0.4em 0.8em;"><span class="badge-dev">In development</span></td>
     </tr>
     <tr>
-      <td colspan="2" style="padding:0.35em 0.8em; background-color:rgba(0,107,94,0.12); color:#006B5E; font-weight:700; font-size:0.95em; border-top:2px solid #006B5E; border-bottom:1px solid #b2d8d0;">Tables &amp; Figures</td>
+      <td colspan="2" style="padding:0.35em 0.8em; background-color:rgba(0,107,94,0.12); color:#006B5E; font-weight:700; font-size:0.95em; border-top:2px solid #006B5E; border-bottom:1px solid #b2d8d0;">Figures &amp; Tables</td>
     </tr>
     <tr>
       <td style="padding:0.4em 0.8em; border-bottom:1px solid #E8E8E8;"><code>ggRandomForests</code>, <code>hvtiPlotR</code></td>
