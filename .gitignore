@@ -12,6 +12,7 @@ renv/
 
 # Rendered output
 *.html
+!index.html
 
 # OS
 .DS_Store
