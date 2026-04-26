@@ -280,11 +280,23 @@ The biostatistician produces the Analysis Report, the product we deliver. Jobs a
 3. Figures and tables
 :::
 
+::: {style="font-size: 1.3em; margin-top: 1em; font-style: italic; opacity: 0.85;"}
+Make the safe approach, the easier approach.
+:::
+
 ::: notes
-These are the three places where reproducibility breaks down in practice. Each section follows the same structure: here's what it looked like before, here's the failure mode, here's what we're doing about it. The solutions are at different stages — some in production, some rolling out, some still aspirational.
+These are the three places where reproducibility breaks down in practice. Each section follows the same structure: here's the failure mode, here's what we're doing about it.
+
+Make the safe approach, the easier approach. We already do a lot of mental work to compensate for the gaps — remembering which dataset is current, keeping track of which version of a function ran, manually assembling figures into a report. The goal isn't to add process on top of that — it's to replace that mental overhead with automation. Checksums instead of memory. Package versions instead of tribal knowledge. Quarto instead of copy-paste.
+
+Long term, the vision is an audit process that runs automatically — not a checklist someone fills out, but a system that tells you whether the analysis is reproducible before you have to ask. We're not there yet, but every piece we put in place moves us closer.
 :::
 
 # Data Ingestion {background-color="#34495e"}
+
+::: {style="font-style: italic; opacity: 0.7; font-size: 0.9em;"}
+Make the safe approach, the easier approach.
+:::
 
 ::: notes
 :::
@@ -361,7 +373,7 @@ These are the three places where reproducibility breaks down in practice. Each s
 ```
 
 ::: notes
-The folder structure isn't the problem — it works. Dataset filenaming MIGHT work. The problem is what happens inside datasets/ when an extract gets updated. Naming and modified dates weren't designed for this job.
+The folder structure isn't the problem — it works. Dataset filenaming MIGHT work. We've all seen these naming "strategies". We want to standardize this with a simple approach... we used file "modified dates" implicitly, but they are fragile and change in uncontrolled ways. So let's make the date part of the standard. Add it to the filename when the file is created. That doesn't solve the whole problem, we still need to track what happens inside the file. What if the file gets overwritten when an extract gets updated? Naming and modified dates weren't designed for this job.
 :::
 
 . . .
@@ -385,27 +397,26 @@ study_root/
   datasets/      ← *this problem*
   descriptive/
   distributions/
-  documents/     ← office docs
-  estimates/     ← cached data
-  graphs/        ← pdf graphics
+  documents/     ← deliverables
+  estimates/     ← cached results
+  graphs/        ← pdf
 ```
 :::
 
-File naming convention for datasets: `built.sas7bdat`
 :::
 
 ::: {.column width="50%"}
 ### What we're adding
 
--   Date in the filename; never overwrite
--   Dataset manifest — source, date, extract parameters
--   Checksum — detect silent changes
--   Audit trail — job ↔ manifest
+-   Date in the filename<br>[never overwrite]{.muted}
+-   Dataset manifest<br>[source, date, parameters]{.muted}
+-   Checksum<br>[detect silent changes]{.muted}
+-   Audit trail<br>[job ↔ manifest]{.muted}
 :::
 :::::
 
 ::: notes
-The folder structure is already there and it works. Over the past 25 years, we've created 1400 studies. Jobs in analysis... read datasets, stored models and results in estimates, graphs. This problem resides inside datasets/ — we need a way to know whether the file the analysis ran against is the same file that's there now. Manifests and checksums do that without changing the structure anyone is used to.
+The folder structure is already there and it works. Jobs under analysis read datasets and write models and results to estimates, and generate graphs. Documents contain deliverables. We're inside datasets/ — filenames contain the date they were written, programatically. The Manifests is created and registration of checksum before we first USE a data file, this is separate from the dataset creation and the analysis jobs. We are building a data audit trail, checked inside the job. Importantly, this CAN be done regardless of the analysis platform.
 :::
 
 ## Manifest + checksum in practice [In development]{.badge-dev}
@@ -451,17 +462,20 @@ stopifnot(current == stored)
 :::::
 
 ::: notes
-The checksum is stored at registration — a deliberate step separate from file creation. If the file is rebuilt (extract re-run, data corrected), the old checksum stays in the manifest and jobs will fail until someone consciously re-registers. This makes rebuilds loud by default. The date-stamped filename tells you when the extract was pulled; the checksum tells you whether the file you're reading now is the same one that was registered. Doesn't tell you a new dataset exists — only that the registered one hasn't changed.
-
-We now have the path to do this in R, and need to extend to SAS.
+The checksum is stored at registration — when the data file is first used! THis is deliberate separate from file creation. If the file is overwritten accidently (extract re-run, data corrected), the old checksum stays in the manifest and jobs will fail until someone consciously re-registers. This makes rebuilds loud by default. The date-stamped filename tells you when the extract was pulled; the checksum tells you whether the file you're reading now is the same one that was registered. Doesn't tell you a new dataset file exists — only that the registered one hasn't changed.
 :::
 
 . . .
 
-Rebuild without re-registering → every downstream job fails.
+If rebuild without re-registering → every downstream job fails.
+<br>
 **That failure is the feature.**
 
 # Model Building {background-color="#34495e"}
+
+::: {style="font-style: italic; opacity: 0.7; font-size: 0.9em;"}
+Make the safe approach, the easier approach.
+:::
 
 ::: notes
 :::
@@ -498,7 +512,7 @@ Neither platform captures the environment. SAS's shared server setup makes it in
 *Can you reproduce this analysis six months from now?*
 :::
 
-## R: `renv` with RStudio projects [In use]{.badge-inuse}
+## R: `renv` with RStudio projects [In flight]{.badge-inflight}
 
 ```{=html}
 <style>
@@ -644,7 +658,7 @@ SAS solved the code+output problem with .lst. R has no equivalent yet. Note: we 
 *Can a new analyst navigate this job without asking whoever wrote it?*
 :::
 
-## R: Quarto analysis reports [In development]{.badge-dev}
+## Quarto templates [In development]{.badge-dev}
 
 ::::: columns
 ::: {.column width="50%"}
@@ -684,6 +698,10 @@ The pitch to SAS analysts isn't "learn a new tool" — it's "get what you alread
 
 # Figures and Tables {background-color="#34495e"}
 
+::: {style="font-style: italic; opacity: 0.7; font-size: 0.9em;"}
+Make the safe approach, the easier approach.
+:::
+
 ::: notes
 :::
 
@@ -713,10 +731,10 @@ The energy never went away — it just moved platforms. plot.sas was hard-won: w
 . . .
 
 ::: {style="font-size: 1.4em; margin-top: 0.5em;"}
-*Can we capture that effort once — and ensure every analyst's figures look the same?*
+*Can we capture that effort once — make figures consistent?*
 :::
 
-## R: standardized pipeline [In development]{.badge-dev}
+## R: standardized pipeline [In flight]{.badge-inflight}
 
 **The package does the hard work. The analyst decorates.**
 
@@ -743,6 +761,7 @@ fig <- plot(corr_analysis(data))
 
 # Analyst decorates to context
 fig +
+  hv_theme("manuscript") +
   scale_color_brewer(palette = "Set1") +
   annotate("text", ...)
 ```
@@ -755,17 +774,19 @@ fig +
 The S3 pattern matters because it separates concerns cleanly. The transform function does the statistical work and returns a typed object. The plot method knows how to visualize that object. The analyst's job is decoration — choosing scales, adding annotations — not rebuilding the figure from scratch. The package examples are the documentation AND the quality standard: if your figure matches the example, it's correct. This is how we recover the consistency that plot.sas enforced, without locking people into SAS.
 :::
 
-## Our visualization packages [In development]{.badge-dev}
+## Our visualization packages [In flight]{.badge-inflight}
 
 **`ggRandomForests`** — [github.com/ehrlinger/ggRandomForests](https://github.com/ehrlinger/ggRandomForests)
 
-Variable importance, partial depth, minimal depth — `ggplot2` objects built around `randomForestSRC`.
+Variable importance, partial depth, minimal depth — `ggplot2` for `randomForestSRC`.
 
 <br>
 
 **`hvtiPlotR`** — [github.com/ehrlinger/hvtiPlotR](https://github.com/ehrlinger/hvtiPlotR)
 
-Survival curves, hazard plots, forest plots in CORR themes. Bridges `ggplot2` to `plot.sas` standards.
+Survival curves, hazard plots, forest plots in CORR themes. 
+
+Bridges `ggplot2` to `plot.sas` standards.
 
 <br>
 
@@ -782,7 +803,7 @@ Right now, this is all SAS.
 
 <br>
 
-*Coming soon.*
+R - *Coming soon.*
 :::
 
 ::: notes
@@ -810,8 +831,8 @@ Reproducibility framing failed us — it reads as an academic virtue, something 
 
 . . .
 
-::: {style="font-size: 1.4em; margin-top: 0.5em;"}
-**Make the right path the easy path.**
+::: {style="font-size: 1.4em; margin-top: 0.5em; font-style: italic;"}
+Make the safe approach, the easier approach.
 :::
 
 ## Honestly
@@ -840,22 +861,22 @@ Reproducibility framing failed us — it reads as an academic virtue, something 
     </tr>
     <tr>
       <td style="padding:0.4em 0.8em; border-bottom:1px solid #E8E8E8;">RStudio Projects + <code>renv</code></td>
-      <td style="padding:0.4em 0.8em; border-bottom:1px solid #E8E8E8;"><span class="badge-inuse">In use</span> — "easy" win</td>
+      <td style="padding:0.4em 0.8em; border-bottom:1px solid #E8E8E8;"><span class="badge-inflight">In flight</span> — "easy" win</td>
     </tr>
     <tr style="background-color:rgba(0,107,94,0.03);">
-      <td style="padding:0.4em 0.8em; border-bottom:1px solid #E8E8E8;">Template programs (SAS, R &#8594; Quarto)</td>
+      <td style="padding:0.4em 0.8em; border-bottom:1px solid #E8E8E8;">Quarto templates</td>
       <td style="padding:0.4em 0.8em; border-bottom:1px solid #E8E8E8;"><span class="badge-dev">In development</span></td>
     </tr>
     <tr>
-      <td style="padding:0.4em 0.8em;"><code>hazard</code> (SAS), <code>TemporalHazard</code> (R)<br><code>randomForestSRC</code> (R)</td>
-      <td style="padding:0.4em 0.8em;"><span class="badge-dev">In development</span></td>
+      <td style="padding:0.4em 0.8em;"><code>hazard</code> (SAS), <code>randomForestSRC</code> (R)<br><code>TemporalHazard</code> (R)</td>
+      <td style="padding:0.4em 0.8em; line-height:1.8;"><span class="badge-adopted">Adopted</span><br><span class="badge-dev">In development</span></td>
     </tr>
     <tr>
       <td colspan="2" style="padding:0.35em 0.8em; background-color:rgba(0,107,94,0.12); color:#006B5E; font-weight:700; font-size:0.95em; border-top:2px solid #006B5E; border-bottom:1px solid #b2d8d0;">Figures &amp; Tables</td>
     </tr>
     <tr>
       <td style="padding:0.4em 0.8em; border-bottom:1px solid #E8E8E8;"><code>ggRandomForests</code>, <code>hvtiPlotR</code></td>
-      <td style="padding:0.4em 0.8em; border-bottom:1px solid #E8E8E8;"><span class="badge-dev">In development</span></td>
+      <td style="padding:0.4em 0.8em; border-bottom:1px solid #E8E8E8;"><span class="badge-inflight">In flight</span></td>
     </tr>
     <tr style="background-color:rgba(0,107,94,0.03);">
       <td style="padding:0.4em 0.8em;"><code>hvtiRtables</code></td>

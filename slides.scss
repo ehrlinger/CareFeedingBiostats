@@ -48,10 +48,12 @@ $presentation-heading-color: $secondary;
 // --- Status badges ---
 // Usage: [Adopted]{.badge-adopted}  [In use]{.badge-inuse}
 //        [In development]{.badge-dev}  [Aspirational]{.badge-aspire}
+//        [In flight]{.badge-inflight}
 .badge-adopted,
 .badge-inuse,
 .badge-dev,
-.badge-aspire {
+.badge-aspire,
+.badge-inflight {
   display: inline-block;
   padding: 0.15em 0.6em;
   border-radius: 4px;
@@ -79,6 +81,12 @@ $presentation-heading-color: $secondary;
   background-color: $warm;
   color: white;
   &::before { content: "◐ "; }
+}
+
+.badge-inflight {
+  background-color: #1a5276;
+  color: white;
+  &::before { content: "▶ "; }
 }
 
 .badge-aspire {
