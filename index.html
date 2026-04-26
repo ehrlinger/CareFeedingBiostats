@@ -1324,8 +1324,7 @@ Discussion
 </tr>
 </tbody>
 </table>
-<p>Biostats run <strong>jobs</strong>, write <strong>an Analysis Report</strong>.</p>
-<p>Researchers write the manuscript.</p>
+<p><em>“Bus insurance” — any analyst can pick up any job.</em></p>
 <aside class="notes">
 <p>The main deliverable of the team is the Analysis Report. SAS and R jobs are implementation detail — what our audience cares about is the report that comes out the other side. Researchers bring the questions, formed as hypothesis. This drives the process. What data is required to answer these questions? CORR determines the statistical approaches, in collaboration with researchers refining the questions. Figures and tables communicate the results to the end audience.</p>
 <p>Scaling the team means making every step of that pipeline reliable and handoff-ready. We still maintain the goal of “any analyst can pick up any job”, we call it “bus insurance”. Can another analyst step in and pick up where ever you are, and continue the work.</p>
@@ -1670,7 +1669,7 @@ display:block!important;
   </div>
 </div>
 <aside class="notes">
-<p>The key word is “handoff.” Python has virtual environments, R’ has the <code>renv</code> package track the environment.</p>
+<p>The key word is “handoff.” Python has virtual environments, R has the <code>renv</code> package to track the environment.</p>
 <p>On day 1, we initialize <code>renv</code> and take a snapshot of the package library and R version. This makes the jobs transferable, not just reproducible on your own machine. The lockfile travels with the project; the library itself gets rebuilt locally on renv::restore().</p>
 <p>SAS has no equivalent — it is less volatile than R, but environments are still an open problem.</p>
 <style type="text/css">
@@ -1954,7 +1953,7 @@ display:block!important;
 <p>Survival curves, hazard plots, forest plots in CORR themes.</p>
 <p>Bridges <code>ggplot2</code> to <code>plot.sas</code> standards.</p>
 <p><br></p>
-<p><em>As the science keeps moving and CORR eveolves, so do the packages.</em></p>
+<p><em>As the science keeps moving and CORR evolves, so do the packages.</em></p>
 <aside class="notes">
 <p>ggRandomForests was the proof of concept — born from an internal need, built as a package, and eventually adopted externally. It was removed from CRAN because of dependency drift, not design failure; the pattern still holds. hvtiPlotR applies the same model to CORR-specific plot types.</p>
 <p>These packages are always in development — the science keeps moving, and the package has to keep up. That’s a governance problem as much as a technical one.</p>
@@ -1990,33 +1989,6 @@ width: 1px!important;
 overflow: hidden!important;
 display:block!important;
 }</style></aside>
-</section>
-<section id="the-framing-shift-that-mattered" class="slide level2" data-background-color="#34495e">
-<h2>The framing shift that mattered</h2>
-<div style="font-size: 1.8em; line-height: 1.5; margin-bottom: 0.8em;">
-<p>“Reproducibility” → <strong>“Production reliability”</strong></p>
-</div>
-<p><em>“Any biostatistician can pick up any job.”</em></p>
-<p>The tools don’t change. The reason to adopt them does.</p>
-<aside class="notes">
-<p>To wrap up, I’ve been working on these pain points in CORR for a long time. The Reproducibility framing failed — it reads as an academic virtue, something you do for reviewers when asked. The Production reliability framing lands differently with the team: it’s about whether someone else can pick up your job on a Monday morning when you’re out sick. Same tools, same practices — but the reason to adopt them shifts from “good science hygiene” to “your teammates won’t be stranded.” The second framing can help with buy-in.</p>
-<p>Make the right path the easy path means the standards have to be lower-friction than the workaround, or people will always take the workaround. Being transparent, it’s still takes work for people to change their ways… even if the path is “hypothetically easier”, roll out is still a learning experience and being done under production pressure.</p>
-<style type="text/css">
-span.MJX_Assistive_MathML {
-position:absolute!important;
-clip: rect(1px, 1px, 1px, 1px);
-padding: 1px 0 0 0!important;
-border: 0!important;
-height: 1px!important;
-width: 1px!important;
-overflow: hidden!important;
-display:block!important;
-}</style></aside>
-<div class="fragment">
-<div style="font-size: 1.5em; margin-top: 0.5em; font-style: italic;">
-<p>Make the safe path the easy path.</p>
-</div>
-</div>
 </section>
 <section id="honestly" class="slide level2">
 <h2>Honestly</h2>
@@ -2118,6 +2090,33 @@ width: 1px!important;
 overflow: hidden!important;
 display:block!important;
 }</style></aside>
+</section>
+<section id="the-framing-shift-that-mattered" class="slide level2" data-background-color="#34495e">
+<h2>The framing shift that mattered</h2>
+<div style="font-size: 1.8em; line-height: 1.5; margin-bottom: 0.8em;">
+<p>“Reproducibility” → <strong>“Production reliability”</strong></p>
+</div>
+<p><em>“Any biostatistician can pick up any job.”</em></p>
+<p>The tools don’t change. The reason to adopt them does.</p>
+<aside class="notes">
+<p>To wrap up, I’ve been working on these pain points in CORR for a long time. The Reproducibility framing failed — it reads as an academic virtue, something you do for reviewers when asked. The Production reliability framing lands differently with the team: it’s about whether someone else can pick up your job on a Monday morning when you’re out sick. Same tools, same practices — but the reason to adopt them shifts from “good science hygiene” to “your teammates won’t be stranded.” The second framing can help with buy-in.</p>
+<p>Make the right path the easy path means the standards have to be lower-friction than the workaround, or people will always take the workaround. Being transparent, it still takes work for people to change their ways — even if the path is “hypothetically easier”, roll out is still a learning experience and being done under production pressure.</p>
+<style type="text/css">
+span.MJX_Assistive_MathML {
+position:absolute!important;
+clip: rect(1px, 1px, 1px, 1px);
+padding: 1px 0 0 0!important;
+border: 0!important;
+height: 1px!important;
+width: 1px!important;
+overflow: hidden!important;
+display:block!important;
+}</style></aside>
+<div class="fragment">
+<div style="font-size: 1.5em; margin-top: 0.5em; font-style: italic;">
+<p>Make the safe path the easy path.</p>
+</div>
+</div>
 </section>
 <section id="resources" class="slide level2" data-background-color="#2c3e50">
 <h2>Resources</h2>

@@ -31,7 +31,7 @@ jobs:
             ggplot2
 
       - name: Render slides
-        run: quarto render CareFeeding.qmd
+        run: quarto render index.qmd
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3

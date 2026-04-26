@@ -267,9 +267,7 @@ Corr includes 19 data staff split between disciplines three disciplines. Data En
   </tbody>
 </table>
 
-Biostats run **jobs**, write **an Analysis Report**.
-
-Researchers write the manuscript.
+*"Bus insurance" — any analyst can pick up any job.*
 
 ::: notes
 The main deliverable of the team is the Analysis Report. SAS and R jobs are implementation detail — what our audience cares about is the report that comes out the other side. Researchers bring the questions, formed as hypothesis. This drives the process. What data is required to answer these questions? CORR determines the statistical approaches, in collaboration with researchers refining the questions. Figures and tables communicate the results to the end audience.
@@ -580,7 +578,7 @@ In model building, we have a few problems to address. First, regardless of the p
 ```
 
 ::: notes
-The key word is "handoff." Python has virtual environments, R' has the `renv` package track the environment.
+The key word is "handoff." Python has virtual environments, R has the `renv` package to track the environment.
 
 On day 1, we initialize `renv` and take a snapshot of the package library and R version. This makes the jobs transferable, not just reproducible on your own machine. The lockfile travels with the project; the library itself gets rebuilt locally on renv::restore(). 
 
@@ -829,7 +827,7 @@ Bridges `ggplot2` to `plot.sas` standards.
 
 <br>
 
-*As the science keeps moving and CORR eveolves, so do the packages.*
+*As the science keeps moving and CORR evolves, so do the packages.*
 
 ::: notes
 ggRandomForests was the proof of concept — born from an internal need, built as a package, and eventually adopted externally. It was removed from CRAN because of dependency drift, not design failure; the pattern still holds. hvtiPlotR applies the same model to CORR-specific plot types.
@@ -849,28 +847,6 @@ R - *Coming soon.*
 
 ::: notes
 We're not done. I've used R table packages when communicating with collaborators, but we need to tame gt and gtsummary to align with hvti publication standards. We have SAS table macros, so the framework is there. The hvtiRtables package is on the long TODO list.
-:::
-
-## The framing shift that mattered {background-color="#34495e"}
-
-::: {style="font-size: 1.8em; line-height: 1.5; margin-bottom: 0.8em;"}
-"Reproducibility" → **"Production reliability"**
-:::
-
-*"Any biostatistician can pick up any job."*
-
-The tools don't change. The reason to adopt them does.
-
-::: notes
-To wrap up, I've been working on these pain points in CORR for a long time. The Reproducibility framing failed — it reads as an academic virtue, something you do for reviewers when asked. The Production reliability framing lands differently with the team: it's about whether someone else can pick up your job on a Monday morning when you're out sick. Same tools, same practices — but the reason to adopt them shifts from "good science hygiene" to "your teammates won't be stranded." The second framing can help with buy-in. 
-
-Make the right path the easy path means the standards have to be lower-friction than the workaround, or people will always take the workaround. Being transparent, it's still takes work for people to change their ways... even if the path is "hypothetically easier", roll out is still a learning experience and being done under production pressure.
-:::
-
-. . .
-
-::: {style="font-size: 1.5em; margin-top: 0.5em; font-style: italic;"}
-Make the safe path the easy path.
 :::
 
 ## Honestly
@@ -927,6 +903,28 @@ Make the safe path the easy path.
 This table is the honest answer to "Where we are?". The folder structure and naming conventions are long-standing and solid — that's the foundation everything else builds on. renv is the easy win we're rolling out now. The methodology and graphics packages are in use but actively changing. I'm activly working on In development items. And the Aspirational items are real and planned, but not yet standard practice. 
 
 This is a real production environment with real constraints, not a clean academic case study.
+:::
+
+## The framing shift that mattered {background-color="#34495e"}
+
+::: {style="font-size: 1.8em; line-height: 1.5; margin-bottom: 0.8em;"}
+"Reproducibility" → **"Production reliability"**
+:::
+
+*"Any biostatistician can pick up any job."*
+
+The tools don't change. The reason to adopt them does.
+
+::: notes
+To wrap up, I've been working on these pain points in CORR for a long time. The Reproducibility framing failed — it reads as an academic virtue, something you do for reviewers when asked. The Production reliability framing lands differently with the team: it's about whether someone else can pick up your job on a Monday morning when you're out sick. Same tools, same practices — but the reason to adopt them shifts from "good science hygiene" to "your teammates won't be stranded." The second framing can help with buy-in.
+
+Make the right path the easy path means the standards have to be lower-friction than the workaround, or people will always take the workaround. Being transparent, it still takes work for people to change their ways — even if the path is "hypothetically easier", roll out is still a learning experience and being done under production pressure.
+:::
+
+. . .
+
+::: {style="font-size: 1.5em; margin-top: 0.5em; font-style: italic;"}
+Make the safe path the easy path.
 :::
 
 ## Resources{background-color="#2c3e50"}
