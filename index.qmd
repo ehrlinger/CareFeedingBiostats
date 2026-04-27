@@ -26,7 +26,6 @@ format:
     highlight-style: rstudio_default-light.theme
     logo: "img/rmed.png"
     footer: "[Slides](https://ehrlinger.github.io/CareFeedingBiostats){target='_blank'}"
-    include-after-body: "img/clean_title_page.html"
     fig-align: center
     code-line-numbers: false
 include-in-header:
