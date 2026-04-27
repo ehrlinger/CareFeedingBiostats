@@ -46,6 +46,7 @@ knitr:
 editor_options:
   chunk_output_type: console
 editor: source
+transition: none
 ---
 
 ```{r setup}
@@ -76,21 +77,17 @@ library(ggplot2)
 :::
 :::::
 
-SAS/C PROC `hazard` for survival analysis (1986).
-
-R package `randomForestSRC` survival, regression, classification (2007).
-
-R package `ggRandomForests` RFSRC graphics (2012).
+We built methods in-house. Now we maintain them too.
 
 [Discipline doesn't scale under production pressure]{style="color: #006B5E; font-weight: bold;"}
 
 
 ::: notes
-I work in Cardiovascular Outcomes Registries and Research, we're part of the Heart, Vascular and thoracic Institute at the Cleveland Clinic. CORR was started in 1997, with the arrival of our director Dr. Eugene Blackstone. We started as a pure SAS, with a small team. We had a goal of being able to hand off a study easily as required. These handoffs required using a social contract held by discipline within the team. Over time, R entered by evolution. The goal is to use the best methodology to answer the scientific questions.
+I work in Cardiovascular Outcomes Registries and Research, we're part of the Heart, Vascular and Thoracic Institute at the Cleveland Clinic. CORR was started in 1997 with the arrival of our director, Dr. Eugene Blackstone. We started as a pure SAS shop, with a small team. A guiding principle of CORR from day one has been the ability to hand off any study easily. These handoffs require a "social contract of practices", that are held together by discipline within the team.
 
-Our primary in house methods started with PROC hazard, a SAS/C method. In 2007, Dr. Ishwaran developed randomForestSRC in CORR, and I wrote ggRandomForests to simplify plotting the forest outputs.
+Our primary in house methods started with PROC hazard, a C program with tight SAS bindings. Over time, R entered by methodology evolution. Dr. Hemant Ishwaran developed randomForestSRC in R at CORR in 2007, random forest for survival, regression and classification. I wrote the ggRandomForests package to simplify plotting these forest outputs using ggplot.
 
-As we've grown, we're seeing that discipline alone doesn't scale easily.
+As we've grown, we've found that discipline alone doesn't scale easily.
 
 :::
 
@@ -155,7 +152,7 @@ As we've grown, we're seeing that discipline alone doesn't scale easily.
 ```
 
 ::: notes
-We are concerned with the scale that this social contract has to support. 19 staff driving 150 data requests delivered directly to researchers. Additionally, we produce about 100+ presentations, and 50 manuscripts a year — all feeding into last years 1,100 HVTI publications. Every inefficiency in our system multiplies across that. This talk is directly addressing what "operating at scale" means. 
+We are concerned with the scale that this social contract has to support. 19 staff driving 150 data requests delivered directly to researchers for their publications. We also directly produce about 100+ presentations, and 50 manuscripts a year in collaborations — all of this feeds into the 1,100 HVTI peer review publications produced last year. Every inefficiency in our system multiplies across that. In this talk I'll be directly addressing what "operating at scale" means. 
 :::
 
 ## CORR Assembly Line
@@ -230,17 +227,17 @@ We are concerned with the scale that this social contract has to support. 19 sta
 ```
 
 ::: notes
-Corr includes 19 data staff split between disciplines three disciplines. Data Engineers focus primarily on getting data from medical systems into our data warehouse, primarily using python. Stat programmers assemble analysis data sets primarily in SAS. Biostatisticans build an analysis report using SAS and R. Our researcher collaborators convert the analysis report into manuscripts and presentations. Data flows through systems; people transform it at each step. The biostatistician sits at the core — taking analysis dataset and producing an Analysis Report that researchers can use to construct a manuscript. Since this conference is an audience of R users, we can focus on the Biostats component of the pipeline.
+These 19 data staff are split across three disciplines. Data Engineers focus executing data requests and on getting data from medical systems into our data warehouse, primarily using python. Stat programmers assemble analysis data sets primarily in SAS. Biostatisticians build an analysis report using SAS and R. Our researcher collaborators convert the analysis report into manuscripts and presentations. Data flows through systems; people transform it at each step. The biostatistician sits at the core — taking analysis dataset and producing an Analysis Report that researchers can use to construct a manuscript. Since this conference is an audience of R users, we can focus on the Biostats component of the pipeline.
 :::
 
-## The Biostatistician Unit of Production
+## What a Biostatistician Delivers
 
 <table style="width:100%; font-size:0.85em; border-collapse:collapse;">
   <thead>
     <tr>
-      <th style="background-color:#34495E; color:white; padding:0.5em 0.8em; font-weight:600; text-align:left;">Study</th>
-      <th style="background-color:#34495E; color:white; padding:0.5em 0.8em; font-weight:600; text-align:left;">Analysis Report</th>
-      <th style="background-color:#1a5276; color:white; padding:0.5em 0.8em; font-weight:600; text-align:left;">Manuscript</th>
+      <th style="background-color:#34495E; color:white; padding:0.5em 0.8em; font-weight:600; text-align:left;">Study<br><span style="font-weight:400; font-size:0.8em; opacity:0.75;">Researcher</span></th>
+      <th style="background-color:#34495E; color:white; padding:0.5em 0.8em; font-weight:600; text-align:left;">Analysis Report<br><span style="font-weight:400; font-size:0.8em; opacity:0.75;">CORR</span></th>
+      <th style="background-color:#1a5276; color:white; padding:0.5em 0.8em; font-weight:600; text-align:left;">Manuscript<br><span style="font-weight:400; font-size:0.8em; opacity:0.75;">Researcher</span></th>
     </tr>
   </thead>
   <tbody>
@@ -270,9 +267,9 @@ Corr includes 19 data staff split between disciplines three disciplines. Data En
 *"Bus insurance" — any analyst can pick up any job.*
 
 ::: notes
-The main deliverable of the team is the Analysis Report. SAS and R jobs are implementation detail — what our audience cares about is the report that comes out the other side. Researchers bring the questions, formed as hypothesis. This drives the process. What data is required to answer these questions? CORR determines the statistical approaches, in collaboration with researchers refining the questions. Figures and tables communicate the results to the end audience.
+The main deliverable of the team is the Analysis Report. The analysis done in SAS and R jobs are an implementation detail — what our customer cares about is the report that comes out the other side. Researchers bring the questions, formed as hypotheses. This drives the process. What data is required to answer these questions? CORR determines the statistical approaches, in collaboration with researchers refining the questions. Figures and tables communicate the results to the end audience.
 
-Scaling the team means making every step of that pipeline reliable and handoff-ready. We still maintain the goal of "any analyst can pick up any job", we call it "bus insurance". Can another analyst step in and pick up where ever you are, and continue the work.
+Scaling the team means making every step of that pipeline reliable and handoff-ready. We still maintain the goal of "any analyst can pick up any job", we call it "bus insurance". Can another analyst step in and pick up wherever you are, and continue the work.
 
 :::
 
@@ -289,9 +286,9 @@ Make the safe path the easy path.
 :::
 
 ::: notes
-These are the three places where reproducibility breaks down in practice. Each section follows the same structure: here's the failure mode, here's what we're doing about it.
+There are three areas where reproducibility breaks down in practice. We'll address each of these areas with: here's the failure mode, here's what we're doing about it.
 
-Make the safe path the easy path. We already do a lot of mental work to compensate for the gaps — remembering which dataset is current, keeping track of which version of a function ran, manually assembling figures into a report. The goal isn't to add process on top of that — it's to replace that mental overhead with automation. Checksums instead of memory. Package versions instead of tribal knowledge. Quarto instead of copy-paste.
+Make the safe path the easy path. We currently do a lot of mental work to compensate for gaps in each of these areas — remembering which dataset is current, keeping track of which version of a function ran, manually assembling figures into a report. The goal isn't to add process on top of that — it's to replace that mental overhead with automation. Using checksums instead of memory. Package versions instead of tribal knowledge. Quarto instead of copy-paste.
 
 Long term, the vision is an audit process that runs automatically — not a checklist someone fills out, but a system that tells you whether the analysis is reproducible before you have to ask. We're not there yet, but every piece we put in place moves us closer.
 :::
@@ -377,9 +374,12 @@ Make the safe path the easy path.
 ```
 
 ::: notes
-The folder structure isn't the problem — it works. Dataset filenaming MIGHT work. We've all seen these naming "strategies". We also used file system "modified dates" implicitly, but those are fragile and change in uncontrolled ways.
+We have a standard folder structure, that isn't the problem — it works. We've all seen these naming "strategies". Dataset filenaming MIGHT work. We also uses file system "modified dates" implicitly, but those are fragile and change in uncontrolled ways.
 
-We want to standardize our data with a simple, automatic approach...  Start by making the file date part of the standard. Adding the date to the filename when the file is created, whcih won't change if the file is moved. 
+
+We want to standardize our data with a simple, automatic approach...  Start by making the file date part of the standard. Adding the date to the filename when the file is created won't change if the file is moved. 
+
+* 
 
 That doesn't solve the whole problem, we still need to track what happens inside the file. What if the file gets overwritten when a data extract gets updated? Naming and modified dates weren't designed for this job.
 :::
@@ -424,7 +424,7 @@ study_root/
 :::::
 
 ::: notes
-The folder structure is already there and it works. Jobs under analysis read datasets and write models and results to estimates, and generate graphs. Documents contain deliverables. Inside datasets/ — filenames contain the date they were written, programatically. 
+The folder structure is already there and it works. Jobs in the analysis folder, read datasets and write models and results to the estimates folder and generate graphs. The documents folder contain deliverables. Inside datasets/ — filenames now can include the date they were written, programmatically. 
 
 A dataset Manifest is created with a checksum registration before we first USE a data file. This must be separate from the dataset creation and done before we build the individual analysis jobs. 
 
@@ -474,11 +474,13 @@ stopifnot(current == stored)
 :::::
 
 ::: notes
-The checksum is stored in the manifest at registration. This is deliberately separate from file creation. If the file is overwritten accidently (extract re-run, data corrected), the old checksum stays in the manifest and jobs will fail until someone consciously re-registers. The social contract now is `never over write a dated dataset."
+The checksum is stored in the manifest at registration. This is deliberately separate from file creation. If the file is overwritten accidentally (a data extract re-run without a date change, or data corrected in place), the old checksum stays in the manifest and jobs should fail until someone consciously re-registers. The social contract now is: never overwrite a dated dataset.
 
-This makes rebuilds fail loudly by default. The date-stamped filename tells you when the extract was pulled; the checksum tells you whether the file you're reading now is the same one that was registered. 
+* 
 
-It doesn't tell you a new dataset file exists — it only indicates that the registered one hasn't changed.
+This makes rebuilds fail loudly by default. The date-stamped filename tells you WHEN the extract was pulled; the checksum tells you whether the file you're reading now is the same one that was registered. 
+
+It doesn't tell you if a NEW dataset file exists — it only indicates that the registered one hasn't changed.
 :::
 
 . . .
@@ -519,7 +521,13 @@ Make the safe path the easy path.
 :::::
 
 ::: notes
-In model building, we have a few problems to address. First, regardless of the platform, SAS and R versions are not locked into the study. We work on a shared disk, with Rstudio server and a shared SAS instance. Neither platform captures the environment. SAS's shared server setup makes it invisible; RStudio can help with Projects, if we use them. The way R uses a global package library makes package versions fragile. The failure modes look different but the root cause is the same: no one pinned the environment to the study.
+In model building, we have a few problems to address. First, regardless of the platform, SAS and R versions are not locked into the study. 
+
+We work on a shared disk, with Rstudio server and a shared SAS instance. Neither platform captures the environment. SAS's shared server setup makes it invisible; RStudio can help with projects, if we use them. The global package library in R makes using package versions fragile over time. The failure modes look different but the root cause is the same: no one pinned the environment to the study.
+
+*
+
+Can you pick up a job six months from now? Will it still run?
 :::
 
 . . .
@@ -578,9 +586,11 @@ In model building, we have a few problems to address. First, regardless of the p
 ```
 
 ::: notes
-The key word is "handoff." Python has virtual environments, R has the `renv` package to track the environment.
+The key here is we want a "handoff." Python has virtual environments. In R, we can use the `renv` package to track the environment.
 
-On day 1, we initialize `renv` and take a snapshot of the package library and R version. This makes the jobs transferable, not just reproducible on your own machine. The lockfile travels with the project; the library itself gets rebuilt locally on renv::restore(). 
+On day 1, we initialize `renv` and take a snapshot of the package library and R version we are currently using. This makes the jobs transferable, not just reproducible on your own machine. The lockfile travels with the project; the library itself gets rebuilt locally on renv::restore(). 
+
+We update packages intentionally with renv::install. 
 
 SAS has no equivalent — it is less volatile than R, but environments are still an open problem.
 :::
@@ -608,9 +618,11 @@ SAS has no equivalent — it is less volatile than R, but environments are still
 ::: notes
 Our strategy for SAS and R shared functions surface two different failure modes, both equally bad. 
 
-SAS has a centralized macro library, but we don't control when changes land — every study gets every update whether ready or not. 
+We use a SAS centralized macro library, but we don't control when changes land — every study gets every update whether you're ready or not. 
 
-R functions are typically copied into a study at creation. This isolates studies from each other but also from function improvements or fixes stay local and often diverge over time.
+We also use a master template folder. This copies the current version of R and SAS shared functions into a study at creation. This isolates studies from each other but also from improvements — fixes stay local to the study until copied into the master folder (if copied) and these functions often diverge over time. Additionally, we rarely propagate changes back into existing studies. 
+
+*
 
 Neither platform has a deliberate, versioned release process.
 :::
@@ -621,7 +633,7 @@ Neither platform has a deliberate, versioned release process.
 *SAS: did that update break something? R: did anyone else get that fix?*
 :::
 
-## R: internal packages (SAS macros) [In development]{.badge-dev}
+## Versioned internal packages [In development]{.badge-dev}
 
 An R package **is** a versioned, distributable library.
 
@@ -644,7 +656,14 @@ An R package **is** a versioned, distributable library.
 :::::
 
 ::: notes
-Packages are better than scattered copies, but the governance problems shift rather than disappear. combined with `renv`, the version choice becomes explicit and deliberate — which is exactly the point.
+Versioned packages are better than scattered copies, but the governance problems shift rather than disappear. Combined with `renv`, the version choice becomes explicit and deliberate — which is exactly the point.
+
+*
+
+There is still a maintenance issue. Anyone can currently edit the SAS macro library. The package development and contribution takes a different skill set. There are new disciplines around release managament and communication. 
+
+Still controlled versioning helps maintain stability of a study over time.
+
 :::
 
 . . .
@@ -652,8 +671,8 @@ Packages are better than scattered copies, but the governance problems shift rat
 **The hard problems shift — they don't disappear.**
 
 - Someone must own releases.
-- Communication of improvements to the teams
-- Studies must change versions deliberately. **controlled**
+- Improvements must be communicated — they don't propagate automatically.
+- Studies must change versions deliberately — **controlled, not automatic.**
 
 ## Problem: Code and results live separately
 
@@ -676,7 +695,11 @@ Packages are better than scattered copies, but the governance problems shift rat
 :::::
 
 ::: notes
-Code and results are note connected. This problem transends the platform again. Jupyter. notebooks, SAS and R all have interactive modes. In SAS we solved this by "mandating" you run the whole job before leaving the job (every night? maybe...). The .lst file is the output. You'd do the same with jupyter notebooks... R scripts have no equivalent yet. 
+Next, the standard problem that Code and results are not connected. This again transcends the platform. SAS, R and even python all have interactive execution modes. In SAS we solved this by "mandating" you run the whole job before leaving the job. Does everyone do that every night? Maybe? Probably not. 
+
+* 
+
+In SAS, the .lst file is the output. Pyhton has jupyter notebooks... R scripts have no explicit equivalent so we turn to Quarto.
 :::
 
 . . .
@@ -724,9 +747,9 @@ Quarto is analogous to the sas job and lst files. A single unified report that i
 
 The pitch to SAS analysts isn't just "learn this new tool" (I tried that) — it's "get what you already have in .lst, but with real figures inline and a structure everyone agrees on." 
 
-We're working on a 4-section template structure as the standard: Short enough chunks to be understandable, consistent enough to navigate, flexible enough to cover every study type. We may be able to connect the steps using a `bookdown` approacj.
+We're working on a 4-section template structure as the standard: Short enough chunks to be understandable, consistent enough to navigate, flexible enough to cover every study type. We hava data ingestion report that passes clean data to the methods for model building. The model is then passed to explainability and results for communicating with researchers. Longer term, we're designing a `bookdown` approach to possibly replace the manually assembled Analysis Report deliverable.
 
-There is still an underlying copy/paste problem — both SAS jobs and R scripts are copied from a central templates folder, meaning in-flight studies don't implicitly get updates. Quarto and R packages are the foundation we're building first before tackling that propagation problem.
+We still have an underlying copy/paste problem — both SAS jobs and R scripts are copied from a central templates folder, meaning in-flight studies don't implicitly get updates. Quarto and R packages are the foundation we're building first before tackling that propagation problem.
 :::
 
 # Figures and Tables {background-color="#34495e"}
@@ -738,7 +761,7 @@ Make the safe path the easy path.
 ::: notes
 :::
 
-## The Problem: Publication-quality graphics
+## Problem: Publication-quality graphics
 
 ::::: columns
 ::: {.column width="50%"}
@@ -758,9 +781,11 @@ Make the safe path the easy path.
 :::::
 
 ::: notes
-We spent an extraordinary amount of effort to make SAS graph behave with our plot.sas macro. we bent SAS graphics into publication quality for manuscripts, but we never solved the presentation problem. Methods we used to use broke, so every presentation now requires a lot of manual work.
+We spent an extraordinary amount of effort to make SAS graphics behave with our plot.sas macro. We bent SAS graphics into publication quality for manuscripts, but we never solved the presentation problem. Methods we used to use broke, so every presentation now requires a lot of manual work.
 
-ggplot2 is more flexible but customizing the output for manuscript and presentations still requires quite a bit of effort. 
+* 
+
+ggplot2 is more flexible but customizing the output for manuscript and presentations still requires quite a bit of effort. Can we capture the effort and make figures consistent.
 :::
 
 . . .
@@ -769,7 +794,7 @@ ggplot2 is more flexible but customizing the output for manuscript and presentat
 *Can we capture that effort once — make figures consistent?*
 :::
 
-## R: standardized pipeline [In flight]{.badge-inflight}
+## R: graphics pipeline [In flight]{.badge-inflight}
 
 **The package does the hard work. The analyst decorates.**
 
@@ -835,14 +860,27 @@ ggRandomForests was the proof of concept — born from an internal need, built a
 These packages are always in development — the science keeps moving, and the package has to keep up. That's a governance problem as much as a technical one.
 :::
 
+## Survival curves — `ggRandomForests`
+
+![](img/surv_plt.png){width="50%" fig-align="center"}
+
+::: {style="font-size: 0.85em; text-align: center; color: #555; margin-top: 0.3em;"}
+Survival difference between two treatment groups (blue, red)<br>
+`randomForestSRC` fits a survival forest; `ggRandomForests` plots the results.
+:::
+
+::: notes
+This is the kind of output that motivated ggRandomForests. randomForestSRC produces individual predicted survival curves for every patient in the cohort — what you're seeing is the full distributional picture of survival across two groups, not just the mean. ggRandomForests turns that forest object into this figure with one function call. The package handles the extraction, the scaling, the ggplot scaffolding. The analyst controls labels and theme.
+:::
+
 ## Problem: Publication-quality Tables
 
 ::: {style="font-size: 1.1em; margin-top: 1.5em;"}
 Right now, this is all SAS.
 
-<br>
+`gt` and `gtsummary` exist — they aren't tamed to our standards yet.
 
-R - *Coming soon.*
+That's next.
 :::
 
 ::: notes
@@ -900,7 +938,7 @@ We're not done. I've used R table packages when communicating with collaborators
 </table>
 
 ::: notes
-This table is the honest answer to "Where we are?". The folder structure and naming conventions are long-standing and solid — that's the foundation everything else builds on. renv is the easy win we're rolling out now. The methodology and graphics packages are in use but actively changing. I'm activly working on In development items. And the Aspirational items are real and planned, but not yet standard practice. 
+This table is the honest answer to "Where we are?". The folder structure and naming conventions are long-standing and solid — that's the foundation everything else builds on. renv is the easy win we're rolling out now. The methodology and graphics packages are in use but actively changing. I'm actively working on the In development items. And the Aspirational items are real and planned, but not yet standard practice. 
 
 This is a real production environment with real constraints, not a clean academic case study.
 :::
@@ -911,19 +949,22 @@ This is a real production environment with real constraints, not a clean academi
 "Reproducibility" → **"Production reliability"**
 :::
 
+::: {style="font-size: 1.8em; line-height: 1.8;"}
 *"Any biostatistician can pick up any job."*
 
-The tools don't change. The reason to adopt them does.
+:::
 
 ::: notes
 To wrap up, I've been working on these pain points in CORR for a long time. The Reproducibility framing failed — it reads as an academic virtue, something you do for reviewers when asked. The Production reliability framing lands differently with the team: it's about whether someone else can pick up your job on a Monday morning when you're out sick. Same tools, same practices — but the reason to adopt them shifts from "good science hygiene" to "your teammates won't be stranded." The second framing can help with buy-in.
 
-Make the right path the easy path means the standards have to be lower-friction than the workaround, or people will always take the workaround. Being transparent, it still takes work for people to change their ways — even if the path is "hypothetically easier", roll out is still a learning experience and being done under production pressure.
+* 
+
+Make the safe path the easy path means the standards have to be lower-friction than the workaround, or people will always take the workaround. Being transparent, it still takes work for people to change their ways — even if the path is "hypothetically easier", roll out is still a learning experience and being done under production pressure.
 :::
 
 . . .
 
-::: {style="font-size: 1.5em; margin-top: 0.5em; font-style: italic;"}
+::: {style="font-size: 1.8em; margin-top: 1em; font-style: italic;"}
 Make the safe path the easy path.
 :::
 
