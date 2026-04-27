@@ -28,7 +28,7 @@ Organized around three production steps — data ingestion, model building, and 
 
 John Ehrlinger is Assistant Staff and Lead Data Scientist in the Department of Cardiothoracic Surgery at the Heart, Vascular & Thoracic Institute (HVTI), Cleveland Clinic. He holds a joint appointment as Clinical Assistant Professor at the Cleveland Clinic Lerner College of Medicine. He leads a mixed team of data engineers and biostatisticians supporting cardiovascular outcomes research across large multi-institutional registries.
 
-John earned his PhD in Statistics from Case Western Reserve University in 2011, where he worked with Hemant Ishwaran on ensemble methods for high-dimensional survival data. His methodological interests include survival analysis, random forests, and reproducible research infrastructure for clinical teams. He is an active R package author — his packages include `ggRandomForests`, `boostmtree`, and `TemporalHazard` — and has led the development of internal tooling (`hvtiPlotR`, `hvtiRutilities`) to standardize analysis workflows across a 19-person hybrid SAS/R team.
+John earned his PhD in Statistics from Case Western Reserve University in 2011, where he worked with Hemant Ishwaran on ensemble methods and regularization methods. His methodological interests include survival analysis, random forests, and reproducible research infrastructure for clinical teams. He is an active R package author — his packages include `ggRandomForests` and `TemporalHazard` — and has led the development of internal tooling (`hvtiPlotR`, `hvtiRutilities`) to standardize analysis workflows across a large hybrid SAS/R/python team.
 
 ---
 
