@@ -24,18 +24,28 @@ Organized around three production steps — data ingestion, model building, and 
 
 ---
 
+## Speaker Bio
+
+John Ehrlinger is Assistant Staff and Lead Data Scientist in the Department of Cardiothoracic Surgery at the Heart, Vascular & Thoracic Institute (HVTI), Cleveland Clinic. He holds a joint appointment as Clinical Assistant Professor at the Cleveland Clinic Lerner College of Medicine. He leads a mixed team of data engineers and biostatisticians supporting cardiovascular outcomes research across large multi-institutional registries.
+
+John earned his PhD in Statistics from Case Western Reserve University in 2011, where he worked with Hemant Ishwaran on ensemble methods for high-dimensional survival data. His methodological interests include survival analysis, random forests, and reproducible research infrastructure for clinical teams. He is an active R package author — his packages include `ggRandomForests`, `boostmtree`, and `TemporalHazard` — and has led the development of internal tooling (`hvtiPlotR`, `hvtiRutilities`) to standardize analysis workflows across a 19-person hybrid SAS/R team.
+
+---
+
 ## Slides
 
-Built with [Quarto](https://quarto.org/) revealjs. To render:
+View the live deck at [ehrlinger.github.io/CareFeedingBiostats](https://ehrlinger.github.io/CareFeedingBiostats).
+
+Built with [Quarto](https://quarto.org/) revealjs. To render locally:
 
 ```r
-quarto::quarto_render("CareFeeding.qmd")
+quarto::quarto_render("index.qmd")
 ```
 
 Or from the terminal:
 
 ```bash
-quarto render CareFeeding.qmd
+quarto render index.qmd
 ```
 
 ---
@@ -46,8 +56,6 @@ quarto render CareFeeding.qmd
 |---|---|
 | [`ggRandomForests`](https://github.com/ehrlinger/ggRandomForests) | ggplot2 visualizations for randomForestSRC |
 | [`hvtiPlotR`](https://github.com/ehrlinger/hvtiPlotR) | CORR-standard ggplot2 themes and plot types |
-| [`hvtiPropensityScore`](https://github.com/ehrlinger/hvtiPropensityScore) | Standard propensity score matching workflow |
 | [`hvtiRutilities`](https://github.com/ehrlinger/hvtiRutilities) | R job governance checks |
 | [`hazard`](https://github.com/ehrlinger/hazard) | SAS multi-phase hazard analysis |
-| [`temporal_hazard`](https://github.com/ehrlinger/temporal_hazard) | Native R port of the SAS/C hazard code |
-| [`mixhazard`](https://github.com/ehrlinger/mixhazard) | Generalized hazard extension (not limited to 3 phases) |
+| [`TemporalHazard`](https://github.com/ehrlinger/temporal_hazard) | Native R port of the SAS/C hazard code |
